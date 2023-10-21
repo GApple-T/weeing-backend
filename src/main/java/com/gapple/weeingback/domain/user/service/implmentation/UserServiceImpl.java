@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.user.service;
+package com.gapple.weeingback.domain.user.service.implmentation;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,6 +10,7 @@ import com.gapple.weeingback.domain.user.entity.User;
 import com.gapple.weeingback.domain.user.entity.dto.UserJoinRequest;
 import com.gapple.weeingback.domain.user.entity.dto.UserLoginRequest;
 import com.gapple.weeingback.domain.user.repository.UserRepository;
+import com.gapple.weeingback.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 

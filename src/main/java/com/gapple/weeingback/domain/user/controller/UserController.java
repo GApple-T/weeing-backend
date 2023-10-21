@@ -1,18 +1,23 @@
 package com.gapple.weeingback.domain.user.controller;
 
-import com.gapple.weeingback.domain.user.entity.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.gapple.weeingback.domain.user.entity.dto.UserJoinRequest;
 import com.gapple.weeingback.domain.user.entity.dto.UserLoginRequest;
-import com.gapple.weeingback.domain.user.service.UserService;
+import com.gapple.weeingback.domain.user.service.implmentation.UserServiceImpl;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-  private final UserService userService;
+  private final UserServiceImpl userService;
 
   @PostMapping("/join")
   public void join(@RequestBody UserJoinRequest request) throws Exception {

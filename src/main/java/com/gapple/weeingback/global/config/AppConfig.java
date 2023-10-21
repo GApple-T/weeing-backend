@@ -1,12 +1,14 @@
 package com.gapple.weeingback.global.config;
 
-import com.gapple.weeingback.domain.user.repository.UserRepository;
-import com.gapple.weeingback.domain.user.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.gapple.weeingback.domain.user.repository.UserRepository;
+import com.gapple.weeingback.domain.user.service.implmentation.UserServiceImpl;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class AppConfig {
   }
 
   @Bean
-  public UserService userService(){
-    return new UserService(userRepository, passwordEncoder());
+  public UserServiceImpl userService(){
+    return new UserServiceImpl(userRepository, passwordEncoder());
   }
 }

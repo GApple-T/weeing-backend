@@ -1,6 +1,7 @@
 package com.gapple.weeingback.domain.user.entity;
 
-import com.gapple.weeingback.domain.check.entity.Check;
+import com.gapple.weeingback.domain.okay.entity.Okay;
+
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,6 @@ public class User {
 
   @OneToOne
   @JoinColumn(name = "check_id")
-  private Check check;
+  private Okay okay;
 //  private UserRole role;
 }

@@ -31,7 +31,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     annotationProcessor("org.projectlombok:lombok:1.18.20")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.20")
-    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.mysql:mysql-connector-j")
     testCompileOnly("org.projectlombok:lombok:1.18.20")
     compileOnly("org.springframework.boot:spring-boot-starter-security")
     compileOnly("org.projectlombok:lombok:1.18.20")

@@ -1,5 +1,7 @@
 package com.gapple.weeingback.domain.okay.service;
 
-public class OkayService {
-    
+import com.gapple.weeingback.domain.okay.entity.dto.OkaySubmitRequest;
+
+public interface OkayService {
+    void submitOkay(OkaySubmitRequest request);
 }

@@ -7,11 +7,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Table
 @Entity
+@Builder
 @Getter @Setter
 public class Okay {
   @Id @GeneratedValue
@@ -30,4 +32,13 @@ public class Okay {
   }
 
   public Okay(){}
+
+  public Okay(Long id, Long issuedAt, Long startAt, boolean isAccess, boolean isTrue, User user) {
+    this.id = id;
+    this.issuedAt = issuedAt;
+    this.startAt = startAt;
+    this.isAccess = isAccess;
+    this.isTrue = isTrue;
+    this.user = user;
+  }
 }

@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService{
     public void join(UserJoinRequest req) throws Exception{
         User user = User.builder().name(req.getName()).email(req.getEmail()).password(req.getPassword()).build();
 
-        Okay okay = new Okay();
+        Okay okay = Okay.builder().isTrue(false).isAccess(false).startAt(0L).build();
         okayRepository.save(okay);
         user.setOkay(okay);
 

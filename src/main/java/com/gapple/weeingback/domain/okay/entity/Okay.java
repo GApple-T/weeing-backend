@@ -1,12 +1,14 @@
 package com.gapple.weeingback.domain.okay.entity;
 
 import com.gapple.weeingback.domain.user.entity.User;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 @Table
 @Entity
@@ -22,8 +24,9 @@ public class Okay {
   @OneToOne(mappedBy = "okay")
   private User user;
 
-  public Okay(boolean isTrue){
-    this.isTrue = isTrue;
+  public Okay(Long issuedAt, Long startAt){
+    this.issuedAt = issuedAt;
+    this.startAt = startAt;
   }
 
   public Okay(){}

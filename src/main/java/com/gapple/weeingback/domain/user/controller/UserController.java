@@ -1,5 +1,7 @@
 package com.gapple.weeingback.domain.user.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +17,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-  private final UserServiceImpl userService;
+  private final UserServiceImpl service;
 
   @PostMapping("/join")
-  public void join(@RequestBody UserJoinRequest request) throws Exception {
-    userService.join(request);
+  public ResponseEntity<Void> join(@RequestBody UserJoinRequest request) throws Exception {
+    service.join(request);
+    return new ResponseEntity<>(HttpStatus.ACCEPTED);
   }
 
   @PostMapping("/login")
-  public void login(@RequestBody UserLoginRequest request){
-    userService.login(request);
+  public ResponseEntity<String> login(@RequestBody UserLoginRequest request){
+    service.login(request);
+    return new ResponseEntity<>(null, HttpStatus.ACCEPTED); // TODO JWT 토큰 발급 로직이 만들어지고 변경될 예정
   }
 }

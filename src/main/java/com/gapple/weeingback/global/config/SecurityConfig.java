@@ -13,21 +13,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
     http.authorizeHttpRequests(request -> request
-        .requestMatchers("/user/**").permitAll()
+        .requestMatchers("/user/*").permitAll()
         .anyRequest().authenticated()
     )
-        .httpBasic(withDefaults());
-//      .formLogin(withDefaults());
+        .httpBasic(withDefaults())
+        .formLogin(withDefaults());
 
     http.sessionManagement((sessionManagement) ->
         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    ); // Don't use Session
+    );
 
     http.csrf(AbstractHttpConfigurer::disable);
 

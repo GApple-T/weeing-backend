@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @Getter @Setter
 public class User {
-  @Id @GeneratedValue
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(columnDefinition = "VARCHAR(15)", nullable = false)

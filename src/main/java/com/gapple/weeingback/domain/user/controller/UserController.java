@@ -1,5 +1,6 @@
 package com.gapple.weeingback.domain.user.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class UserController {
   private final UserServiceImpl service;
 
   @PostMapping("/join")
-  public ResponseEntity<Void> join(@RequestBody UserJoinRequest request) throws Exception {
+  public ResponseEntity<Void> join(@Valid @RequestBody UserJoinRequest request) throws Exception {
     service.join(request);
     return new ResponseEntity<>(HttpStatus.ACCEPTED);
   }

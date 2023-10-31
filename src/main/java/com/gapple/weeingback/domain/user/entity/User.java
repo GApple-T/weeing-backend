@@ -21,7 +21,7 @@ public class User {
   @Column(columnDefinition = "VARCHAR(50)", nullable = false)
   private String email;
 
-  @Column(columnDefinition = "VARCHAR(255)", nullable = false)
+  @Column(columnDefinition = "VARCHAR(24)", nullable = false)
   private String password;
 
   @OneToOne

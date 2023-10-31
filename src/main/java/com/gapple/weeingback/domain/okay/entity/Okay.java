@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @Getter @Setter
 public class Okay {
-  @Id @GeneratedValue
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)

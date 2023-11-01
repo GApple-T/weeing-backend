@@ -1,16 +1,15 @@
  package com.gapple.weeingback.global.filter;
 
- import com.gapple.weeingback.domain.user.entity.User;
  import com.gapple.weeingback.global.jwt.JwtParser;
  import com.gapple.weeingback.global.jwt.JwtProperties;
- import com.gapple.weeingback.global.jwt.userDetail.UserDetail;
- import com.gapple.weeingback.global.jwt.userDetail.UserDetailService;
+ import com.gapple.weeingback.global.jwt.userDetails.UserDetailsServiceImpl;
  import jakarta.servlet.FilterChain;
  import jakarta.servlet.ServletException;
  import jakarta.servlet.http.HttpServletRequest;
  import jakarta.servlet.http.HttpServletResponse;
  import lombok.RequiredArgsConstructor;
  import org.springframework.security.authentication.BadCredentialsException;
+ import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
  import org.springframework.security.core.Authentication;
  import org.springframework.security.core.context.SecurityContextHolder;
  import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,7 @@
 
  @RequiredArgsConstructor
  public class JwtFilter extends OncePerRequestFilter {
-     private final UserDetailService service;
+     private final UserDetailsServiceImpl service;
 
      @Override
      protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -60,7 +59,7 @@
      }
 
      private Authentication createAuthenticationToken(UserDetails userDetails){
-        return null;
+         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
         // TODO Authentication 객체 만들어서 반환하기
      }
  }

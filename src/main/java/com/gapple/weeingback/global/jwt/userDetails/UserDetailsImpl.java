@@ -1,4 +1,4 @@
-package com.gapple.weeingback.global.jwt.userDetail;
+package com.gapple.weeingback.global.jwt.userDetails;
 
 import com.gapple.weeingback.domain.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -6,10 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class UserDetail implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
     private final User user;
 
-    public UserDetail(User user) {
+    public UserDetailsImpl(User user) {
         this.user = user;
     }
 

@@ -1,56 +1,66 @@
-// package com.gapple.weeingback.global.filter;
+ package com.gapple.weeingback.global.filter;
 
-// import com.gapple.weeingback.global.jwt.JwtProvider;
-// import jakarta.servlet.*;
-// import jakarta.servlet.http.HttpServletRequest;
-// import lombok.extern.slf4j.Slf4j;
-// import org.springframework.security.core.Authentication;
-// import org.springframework.security.core.context.SecurityContextHolder;
-// import org.springframework.util.StringUtils;
+ import com.gapple.weeingback.domain.user.entity.User;
+ import com.gapple.weeingback.global.jwt.JwtParser;
+ import com.gapple.weeingback.global.jwt.JwtProperties;
+ import com.gapple.weeingback.global.jwt.userDetail.UserDetail;
+ import com.gapple.weeingback.global.jwt.userDetail.UserDetailService;
+ import jakarta.servlet.FilterChain;
+ import jakarta.servlet.ServletException;
+ import jakarta.servlet.http.HttpServletRequest;
+ import jakarta.servlet.http.HttpServletResponse;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.security.authentication.BadCredentialsException;
+ import org.springframework.security.core.Authentication;
+ import org.springframework.security.core.context.SecurityContextHolder;
+ import org.springframework.security.core.userdetails.UserDetails;
+ import org.springframework.web.filter.OncePerRequestFilter;
 
-// import java.io.IOException;
+ import java.io.IOException;
 
-// @Slf4j
-// public class JwtFilter extends GenericFilter {
-//   public static final String AUTHORIZATION_HEADER = "Authorization";
+ @RequiredArgsConstructor
+ public class JwtFilter extends OncePerRequestFilter {
+     private final UserDetailService service;
 
-//   private final JwtProvider provider;
+     @Override
+     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+         String header = JwtProperties.HEADER;
 
-//   public JwtFilter(JwtProvider provider){
-//     this.provider = provider;
-//   }
+         if(isNullOrWrong(header)){
+             super.doFilter(request, response, filterChain);
+         }
 
-//   @Override
-//   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+         String accessToken = extractAccessToken(header);
+         String email = getEmailFromToken(accessToken);
 
-//     System.out.println("doFilter");
+         UserDetails userDetails = service.loadUserByUsername(email);
 
-//     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-//     String jwt = resolveToken(httpServletRequest);
-//     String requestURI = httpServletRequest.getRequestURI();
+         Authentication authentication = createAuthenticationToken(userDetails);
 
-//     // 토큰 유효성 검증 후 정상이면 SecurityContext에 저장
-//     if(StringUtils.hasText(jwt) && provider.validateToken(jwt)){ // TODO 토큰 검증 만들기
-//       Authentication authentication = provider.getAuthentication(jwt); // TODO 토큰 인증 주기
-//       SecurityContextHolder.getContext().setAuthentication(authentication);
-//       log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}",authentication.getName(),requestURI);
-//     }
+         SecurityContextHolder.clearContext();
+         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-//     else log.debug("유효한 JWT 토큰이 없습니다, uri: {}",requestURI);
+         super.doFilter(request, response, filterChain);
+     }
 
-//     // 생성한 필터 실행
-//     chain.doFilter(httpServletRequest,response);
-//   }
+     private boolean isNullOrWrong(String header) {
+         return header == null || !header.startsWith(JwtProperties.PREFIX);
+     }
 
-//   // Request Header에서 토큰 정보를 꺼내오기
-//   private String resolveToken(HttpServletRequest request){
-//     String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-//     if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
+     private String extractAccessToken(String jwtTokenHeader) {
+         return jwtTokenHeader.replace(JwtProperties.PREFIX, "");
+     }
 
-//       System.out.println("token : " + bearerToken);
+     private String getEmailFromToken(String accessToken) {
+         String email = JwtParser.getTokenSubjectOrNull(accessToken);
+         if (email == null) {
+             throw new BadCredentialsException("만료되거나 유효하지 않은 JWT");
+         }
+         return email;
+     }
 
-//       return bearerToken.substring(7);
-//     }
-//     return null;
-//   }
-// }
+     private Authentication createAuthenticationToken(UserDetails userDetails){
+        return null;
+        // TODO Authentication 객체 만들어서 반환하기
+     }
+ }

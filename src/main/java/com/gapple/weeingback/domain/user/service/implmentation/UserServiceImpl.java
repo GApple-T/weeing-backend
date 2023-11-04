@@ -1,9 +1,7 @@
 package com.gapple.weeingback.domain.user.service.implmentation;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.gapple.weeingback.global.jwt.JwtProvider;
+import com.gapple.weeingback.global.jwt.TokenResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,26 +22,36 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final OkayRepository okayRepository;
     private final PasswordEncoder passwordEncoder;
-    // private JwtProvider jwtProvider = new JwtProvider();
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void join(UserJoinRequest req) throws Exception{
-        User user = User.builder().name(req.getName()).email(req.getEmail()).password(req.getPassword()).build();
+        User user = User.builder()
+                .name(req.getName())
+                .email(req.getEmail())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .build();
 
-        Okay okay = Okay.builder().isTrue(false).isAccess(false).startAt(0L).build();
-        okayRepository.save(okay);
-        user.setOkay(okay);
+        Okay okay = Okay.builder()
+                .isTrue(false)
+                .isAccess(false)
+                .startAt(0L)
+                .issuedAt(0L)
+                .build();
 
         if(!userRepository.existsUserByEmail(req.getEmail())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            okayRepository.save(okay);
+            user.setOkay(okay);
+
             userRepository.save(user);
         }
-        else throw new Exception();
+        else throw new IllegalAccessException();
     }
 
-    public String login(UserLoginRequest request){
-        Authentication authentication = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authentication.getName();
+    public TokenResponse login(UserLoginRequest request) throws IllegalAccessException {
+        User thisUser = userRepository.findUserByEmail(request.getEmail());
+
+        if(!passwordEncoder.matches(request.getPassword(), thisUser.getPassword())) throw new IllegalAccessException();
+
+        return JwtProvider.generateToken(request.getEmail());
     }
 }

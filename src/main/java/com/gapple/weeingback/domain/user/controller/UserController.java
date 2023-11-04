@@ -1,5 +1,6 @@
 package com.gapple.weeingback.domain.user.controller;
 
+import com.gapple.weeingback.global.jwt.TokenResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,7 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody UserLoginRequest request){
-    service.login(request);
-    return new ResponseEntity<>(null, HttpStatus.ACCEPTED); // TODO JWT 토큰 발급 로직이 만들어지고 변경될 예정
+  public ResponseEntity<TokenResponse> login(@RequestBody UserLoginRequest request) throws IllegalAccessException {
+    return new ResponseEntity<>(service.login(request), HttpStatus.ACCEPTED);
   }
 }

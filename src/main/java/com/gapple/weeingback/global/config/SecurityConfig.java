@@ -30,13 +30,15 @@ public class SecurityConfig {
         .anyRequest().authenticated()
     )
         .httpBasic(withDefaults())
-        .formLogin(withDefaults());
+        .formLogin(withDefaults())
 
-    http.sessionManagement((sessionManagement) ->
+    .sessionManagement((sessionManagement) ->
         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    ).csrf(AbstractHttpConfigurer::disable);
+    )
 
-    http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+    .csrf(AbstractHttpConfigurer::disable)
+
+    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }

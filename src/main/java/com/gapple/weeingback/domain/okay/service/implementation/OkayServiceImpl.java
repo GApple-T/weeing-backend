@@ -1,13 +1,10 @@
 package com.gapple.weeingback.domain.okay.service.implementation;
 
 import com.gapple.weeingback.domain.okay.entity.Okay;
-import com.gapple.weeingback.domain.okay.entity.dto.OkaySubmitRequest;
+import com.gapple.weeingback.domain.okay.entity.dto.request.OkaySubmitRequest;
 import com.gapple.weeingback.domain.okay.repository.OkayRepository;
-import com.gapple.weeingback.domain.user.entity.User;
-import com.gapple.weeingback.domain.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

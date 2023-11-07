@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.okay.entity.dto;
+package com.gapple.weeingback.domain.okay.entity.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

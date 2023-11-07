@@ -23,5 +23,4 @@ public class UserJoinRequest {
     @Size(min = 8, max = 24)
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,24}$", message = "비밀번호는 8~24 자리이며, 특수문자가 1개 이상 들어가야합니다.")
     private String password;
-//    private UserRole userRole;
 }

@@ -15,16 +15,16 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender javaMailSender;
-    public String sendMail(EmailContent emailMessage, String type) {
+    public String sendMail(String to, String subject, String body){
         String authNum = createCode();
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-            mimeMessageHelper.setTo(emailMessage.getTo()); // 메일 수신자
-            mimeMessageHelper.setSubject(emailMessage.getSubject()); // 메일 제목
-            mimeMessageHelper.setText("what is this"); // 메일 본문 내용, HTML 여부
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setText(body);
             javaMailSender.send(mimeMessage);
 
             log.info("Success");

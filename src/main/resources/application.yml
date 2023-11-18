@@ -1,15 +1,27 @@
 spring:
   datasource:
-    url: jdbc:mysql://0.0.0.0:3306/mysql
-    username: root
-    password: 1234
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${mail.username}
+    password: ${mail.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
 
   jpa:
     open-in-view: false
     hibernate:
       dialect: org.hibernate.dialect.MySQL5Dialect
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:format_sql: true
     show-sql: true
@@ -20,3 +32,5 @@ spring:
 
 jwt:
   secret: MjFmcnlmc2RmamE3OXlZRnNkRnN5ZGY5eWZzZGhnSGdxZWc0Mwo=
+server:
+  port: 8081

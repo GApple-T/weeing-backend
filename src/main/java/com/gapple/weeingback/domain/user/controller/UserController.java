@@ -4,10 +4,7 @@ import com.gapple.weeingback.global.jwt.TokenResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.gapple.weeingback.domain.user.entity.dto.UserJoinRequest;
 import com.gapple.weeingback.domain.user.entity.dto.UserLoginRequest;
@@ -27,8 +24,13 @@ public class UserController {
     return new ResponseEntity<>(HttpStatus.ACCEPTED);
   }
 
-  @PostMapping("/login")
+  @GetMapping("/login")
   public ResponseEntity<TokenResponse> login(@RequestBody UserLoginRequest request) throws IllegalAccessException {
     return new ResponseEntity<>(service.login(request), HttpStatus.ACCEPTED);
+  }
+
+  @PostMapping("/find")
+  public void findMyId(){
+
   }
 }

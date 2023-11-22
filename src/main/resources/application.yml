@@ -21,7 +21,7 @@ spring:
     open-in-view: false
     hibernate:
       dialect: org.hibernate.dialect.MySQL5Dialect
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:format_sql: true
     show-sql: true
@@ -32,5 +32,3 @@ spring:
 
 jwt:
   secret: MjFmcnlmc2RmamE3OXlZRnNkRnN5ZGY5eWZzZGhnSGdxZWc0Mwo=
-server:
-  port: 8081

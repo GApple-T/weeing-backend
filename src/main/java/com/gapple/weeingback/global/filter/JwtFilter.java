@@ -3,6 +3,7 @@
  import com.gapple.weeingback.global.jwt.JwtProperties;
  import com.gapple.weeingback.global.jwt.JwtProvider;
  import com.gapple.weeingback.global.jwt.userDetails.UserDetailsServiceImpl;
+ import io.jsonwebtoken.Jwts;
  import jakarta.servlet.FilterChain;
  import jakarta.servlet.ServletException;
  import jakarta.servlet.http.HttpServletRequest;
@@ -25,14 +26,15 @@
 
      @Override
      protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-         String header = request.getHeader("Authorization");
-         log.warn(header);
+         String authorization = request.getHeader("authorization");
 
-         if(isNullOrWrong(header)){
+         if (isNullOrWrong(authorization))
              super.doFilter(request, response, filterChain);
-         }
 
-         String accessToken = extractAccessToken(header);
+         log.warn(authorization);
+
+
+         String accessToken = extractAccessToken(authorization);
          String email = getEmailFromToken(accessToken);
 
          UserDetails userDetails = service.loadUserByUsername(email);
@@ -63,6 +65,5 @@
 
      private Authentication createAuthenticationToken(UserDetails userDetails){
          return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
-        // TODO Authentication 객체 만들어서 반환하기
      }
  }

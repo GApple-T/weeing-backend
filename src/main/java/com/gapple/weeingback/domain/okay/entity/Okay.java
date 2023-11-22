@@ -16,16 +16,16 @@ public class Okay {
   private Long id;
 
   @Column(nullable = false)
-  private Long issuedAt = null; // 상담 신청 일자
+  private Long issuedAt; // 상담 신청 일자
 
   @Column(nullable = false)
-  private Long startAt = null; // 언제 가야하는지
+  private Long startAt; // 언제 가야하는지
 
   @Column(nullable = false)
-  private boolean isAccess = false; // 선생님이 승인했는지
+  private boolean isAccess; // 선생님이 승인했는지
 
   @Column(nullable = false)
-  private boolean isTrue = false; // 활성화된 Check 인지
+  private boolean isTrue; // 활성화된 Check 인지
 
   @OneToOne(mappedBy = "okay")
   private User user;

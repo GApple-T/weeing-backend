@@ -26,10 +26,9 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
     http.authorizeHttpRequests(request -> request
-//        .requestMatchers("/user/**").permitAll()
-//        .requestMatchers("/send-mail/**").permitAll()
-//        .anyRequest().authenticated()
-                            .anyRequest().permitAll()
+        .requestMatchers("/user/**").permitAll()
+        .requestMatchers("/send-mail/**").permitAll()
+        .anyRequest().authenticated()
     )
         .httpBasic(withDefaults())
         .formLogin(withDefaults())

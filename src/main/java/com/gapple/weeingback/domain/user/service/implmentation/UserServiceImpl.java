@@ -2,11 +2,13 @@ package com.gapple.weeingback.domain.user.service.implmentation;
 
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import com.gapple.weeingback.global.jwt.TokenResponse;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gapple.weeingback.domain.okay.entity.Okay;
 import com.gapple.weeingback.domain.okay.repository.OkayRepository;
 import com.gapple.weeingback.domain.user.entity.User;
 import com.gapple.weeingback.domain.user.entity.dto.UserJoinRequest;
@@ -24,34 +26,39 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void join(UserJoinRequest req) throws Exception{
+    public ResponseEntity<?> join(UserJoinRequest req){
         User user = User.builder()
-                .name(req.getName())
                 .email(req.getEmail())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .build();
 
-        Okay okay = Okay.builder()
-                .isTrue(false)
-                .isAccess(false)
-                .startAt(0L)
-                .issuedAt(0L)
-                .build();
+//        Okay okay = Okay.builder()
+//                .isTrue(false)
+//                .isAccess(false)
+//                .startAt(0L)
+//                .issuedAt(0L)
+//                .build();
 
         if(!userRepository.existsUserByEmail(req.getEmail())) {
-            okayRepository.save(okay);
-            user.setOkay(okay);
-
+//            okayRepository.save(okay);
+//            user.setOkay(okay);
             userRepository.save(user);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        else throw new IllegalAccessException();
-    }
+        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+}
 
-    public TokenResponse login(UserLoginRequest request) throws IllegalAccessException {
-        User thisUser = userRepository.findUserByEmail(request.getEmail());
+    public ResponseEntity<TokenResponse> login(UserLoginRequest request){
+        User user = userRepository.findUserByEmail(request.getEmail());
 
-        if(!passwordEncoder.matches(request.getPassword(), thisUser.getPassword())) throw new IllegalAccessException();
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        return JwtProvider.generateToken(request.getEmail());
+        try {
+            return ResponseEntity.ok(JwtProvider.generateToken(request.getEmail()));
+        } catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

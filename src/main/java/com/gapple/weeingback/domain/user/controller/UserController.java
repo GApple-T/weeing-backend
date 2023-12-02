@@ -1,5 +1,6 @@
 package com.gapple.weeingback.domain.user.controller;
 
+import com.gapple.weeingback.global.email.service.EmailService;
 import com.gapple.weeingback.global.jwt.TokenResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,20 +18,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
   private final UserServiceImpl service;
+  private final EmailService emailService;
 
   @PostMapping("/join")
-  public ResponseEntity<Void> join(@Valid @RequestBody UserJoinRequest request) throws Exception {
-    service.join(request);
-    return new ResponseEntity<>(HttpStatus.ACCEPTED);
+  public ResponseEntity<?> join(@Valid @RequestBody UserJoinRequest request){
+    return service.join(request);
   }
 
-  @GetMapping("/login")
-  public ResponseEntity<TokenResponse> login(@RequestBody UserLoginRequest request) throws IllegalAccessException {
-    return new ResponseEntity<>(service.login(request), HttpStatus.ACCEPTED);
+  @PostMapping("/login")
+  public ResponseEntity<TokenResponse> login(@Valid @RequestBody UserLoginRequest request){
+    return service.login(request);
   }
 
   @PostMapping("/find")
-  public void findMyId(){
-
+  public void findMyAccount(){
+    emailService.sendMail("me@xolving.com", "안보내지면 귀찮은데?", "안보내지면 귀찮은 과정이 있을 예정임");
   }
 }

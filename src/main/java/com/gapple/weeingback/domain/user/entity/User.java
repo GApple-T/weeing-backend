@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.security.Principal;
+
 @Table
 @Entity
 @Builder
@@ -15,7 +17,7 @@ public class User {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+  @Column(columnDefinition = "VARCHAR(15)")
   private String name;
 
   @Column(columnDefinition = "VARCHAR(50)", nullable = false)
@@ -27,7 +29,6 @@ public class User {
   @OneToOne
   @JoinColumn(name = "check_id")
   private Okay okay;
-//  private UserRole role;
 
   public User(){}
 

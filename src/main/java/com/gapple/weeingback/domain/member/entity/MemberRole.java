@@ -1,12 +1,11 @@
-package com.gapple.weeingback.domain.user.entity;
+package com.gapple.weeingback.domain.member.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-public enum UserRole {
+public enum MemberRole {
   DEFAULT("ROLE_DEFAULT"),
   STUDENT("ROLE_STUDENT"),
   TEACHER("ROLE_TEACHER"),

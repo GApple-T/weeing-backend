@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.user.entity;
+package com.gapple.weeingback.domain.member.entity;
 
 import com.gapple.weeingback.domain.okay.entity.Okay;
 
@@ -7,13 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.security.Principal;
-
 @Table
 @Entity
 @Builder
 @Getter @Setter
-public class User {
+public class Member {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
@@ -30,9 +28,9 @@ public class User {
   @JoinColumn(name = "check_id")
   private Okay okay;
 
-  public User(){}
+  public Member(){}
 
-  public User(Long id, String name, String email, String password, Okay okay) {
+  public Member(Long id, String name, String email, String password, Okay okay) {
     this.id = id;
     this.name = name;
     this.email = email;

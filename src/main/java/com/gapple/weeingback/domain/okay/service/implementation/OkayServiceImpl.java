@@ -16,7 +16,7 @@ public class OkayServiceImpl {
     @Transactional
     public void submitOkay(OkaySubmitRequest request){
         // TODO 상담 확인서 저장하기
-        Okay okay = okayRepository.findOkayByUserEmail(request.getEmail());
+        Okay okay = okayRepository.findOkayByMemberEmail(request.getEmail());
         okay.setIssuedAt(request.getIssuedAt());
         okay.setStartAt(request.getStartAt());
         okay.setTrue(true);

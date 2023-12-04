@@ -1,33 +1,33 @@
-package com.gapple.weeingback.domain.user.service.implmentation;
+package com.gapple.weeingback.domain.member.service.implmentation;
 
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import com.gapple.weeingback.global.jwt.TokenResponse;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gapple.weeingback.domain.okay.repository.OkayRepository;
-import com.gapple.weeingback.domain.user.entity.User;
-import com.gapple.weeingback.domain.user.entity.dto.UserJoinRequest;
-import com.gapple.weeingback.domain.user.entity.dto.UserLoginRequest;
-import com.gapple.weeingback.domain.user.repository.UserRepository;
-import com.gapple.weeingback.domain.user.service.UserService;
+import com.gapple.weeingback.domain.member.entity.Member;
+import com.gapple.weeingback.domain.member.entity.dto.MemberJoinRequest;
+import com.gapple.weeingback.domain.member.entity.dto.MemberLoginRequest;
+import com.gapple.weeingback.domain.member.repository.MemberRepository;
+import com.gapple.weeingback.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Component
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
-    private final UserRepository userRepository;
-    private final OkayRepository okayRepository;
+public class MemberServiceImpl implements MemberService {
+    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public ResponseEntity<?> join(UserJoinRequest req){
-        User user = User.builder()
+    public ResponseEntity<?> join(MemberJoinRequest req){
+        Member member = Member.builder()
                 .email(req.getEmail())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .build();
@@ -39,19 +39,19 @@ public class UserServiceImpl implements UserService{
 //                .issuedAt(0L)
 //                .build();
 
-        if(!userRepository.existsUserByEmail(req.getEmail())) {
+        if(!memberRepository.existsMemberByEmail(req.getEmail())) {
 //            okayRepository.save(okay);
 //            user.setOkay(okay);
-            userRepository.save(user);
+            memberRepository.save(member);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 }
 
-    public ResponseEntity<TokenResponse> login(UserLoginRequest request){
-        User user = userRepository.findUserByEmail(request.getEmail());
+    public ResponseEntity<TokenResponse> login(MemberLoginRequest request){
+        Member member = memberRepository.findMemberByEmail(request.getEmail());
 
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
+        if(!passwordEncoder.matches(request.getPassword(), member.getPassword())){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 

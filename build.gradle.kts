@@ -33,12 +33,14 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.20")
+
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    compileOnly("org.projectlombok:lombok:1.18.24")
+
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation("org.postgresql:postgresql:42.6.0")
-    testCompileOnly("org.projectlombok:lombok:1.18.20")
+
     compileOnly("org.springframework.boot:spring-boot-starter-security")
-    compileOnly("org.projectlombok:lombok:1.18.20")
 }
 
 tasks.withType<Test> {

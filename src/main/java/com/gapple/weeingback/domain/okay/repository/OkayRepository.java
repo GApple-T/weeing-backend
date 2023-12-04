@@ -8,5 +8,5 @@ import com.gapple.weeingback.domain.okay.entity.Okay;
 import java.util.Optional;
 
 public interface OkayRepository extends JpaRepository<Okay, Long> {
-    Okay findOkayByUserEmail(String email);
+    Okay findOkayByMemberEmail(String email);
 }

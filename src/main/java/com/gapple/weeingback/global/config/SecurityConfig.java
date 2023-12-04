@@ -3,8 +3,6 @@ package com.gapple.weeingback.global.config;
 import static org.springframework.security.config.Customizer.*;
 
 import com.gapple.weeingback.global.filter.JwtFilter;
-import com.gapple.weeingback.global.jwt.JwtProvider;
-import com.gapple.weeingback.global.jwt.userDetails.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,25 +19,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @EnableWebSecurity(debug = true)
 public class SecurityConfig {
-  private final UserDetailsServiceImpl userDetailsService;
+  private final JwtFilter jwtFilter;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
     http.authorizeHttpRequests(request -> request
         .requestMatchers("/user/**").permitAll()
-        .requestMatchers("/send-mail/**").permitAll()
         .anyRequest().authenticated()
-    )
-        .httpBasic(withDefaults())
-        .formLogin(withDefaults())
+    ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-    .sessionManagement((sessionManagement) ->
+    http.httpBasic(withDefaults()).formLogin(withDefaults());
+
+    http.sessionManagement((sessionManagement) ->
         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    )
+    );
 
-    .csrf(AbstractHttpConfigurer::disable)
-
-    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+    http.csrf(AbstractHttpConfigurer::disable);
 
     return http.build();
   }
@@ -47,10 +42,5 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder(){
     return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public JwtFilter jwtFilter(){
-    return new JwtFilter(userDetailsService);
   }
 }

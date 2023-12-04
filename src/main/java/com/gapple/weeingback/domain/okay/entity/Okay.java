@@ -1,6 +1,6 @@
 package com.gapple.weeingback.domain.okay.entity;
 
-import com.gapple.weeingback.domain.user.entity.User;
+import com.gapple.weeingback.domain.member.entity.Member;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -28,7 +28,7 @@ public class Okay {
   private boolean isTrue; // 활성화된 Check 인지
 
   @OneToOne(mappedBy = "okay")
-  private User user;
+  private Member member;
 
   public Okay(Long issuedAt, Long startAt){
     this.issuedAt = issuedAt;
@@ -37,12 +37,12 @@ public class Okay {
 
   public Okay(){}
 
-  public Okay(Long id, Long issuedAt, Long startAt, boolean isAccess, boolean isTrue, User user) {
+  public Okay(Long id, Long issuedAt, Long startAt, boolean isAccess, boolean isTrue, Member member) {
     this.id = id;
     this.issuedAt = issuedAt;
     this.startAt = startAt;
     this.isAccess = isAccess;
     this.isTrue = isTrue;
-    this.user = user;
+    this.member = member;
   }
 }

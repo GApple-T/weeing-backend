@@ -1,7 +1,5 @@
 package com.gapple.weeingback.global.email.service;
 
-import com.gapple.weeingback.domain.user.service.UserService;
-import com.gapple.weeingback.global.email.entity.EmailContent;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

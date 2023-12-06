@@ -1,14 +1,14 @@
 spring:
   datasource:
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
+    url: ${db_url}
+    username: ${db_username}
+    password: ${db_password}
     driver-class-name: org.postgresql.Driver
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${mail.username}
-    password: ${mail.password}
+    username: ${mail_username}
+    password: ${mail_password}
     properties:
       mail:
         smtp:

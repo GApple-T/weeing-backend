@@ -4,70 +4,48 @@
  import io.jsonwebtoken.ExpiredJwtException;
  import io.jsonwebtoken.Jwts;
  import io.jsonwebtoken.SignatureAlgorithm;
+ import io.jsonwebtoken.impl.DefaultJwtBuilder;
  import io.jsonwebtoken.io.Decoders;
+ import io.jsonwebtoken.io.Encoders;
  import io.jsonwebtoken.security.Keys;
  import org.springframework.beans.factory.annotation.Value;
+ import org.springframework.stereotype.Component;
+
+ import java.nio.charset.StandardCharsets;
  import java.security.Key;
  import java.sql.Date;
  import java.time.Instant;
  import java.time.temporal.ChronoUnit;
+ import java.util.Base64;
 
+ @Component
  public class JwtProvider {
      private String secret;
-     private Key key;
 
      public JwtProvider(@Value("${jwt.secret}") String secret){
         this.secret = secret;
-        afterSetting();
      }
 
-     private void afterSetting(){
-         byte[] keyBytes = Decoders.BASE64.decode(secret);
-         this.key = Keys.hmacShaKeyFor(keyBytes);
-     }
-
-   public static TokenResponse generateToken(String email){
-       return new TokenResponse(
-               generateAccessToken(email), generateRefreshToken(email)
-       );
-   }
-
-   private static String generateAccessToken(String email){
-       Instant issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+   public String generateToken(String email){
+       Instant issuedAt = Instant.now();
        Instant expirtion = issuedAt.plus(JwtProperties.EXPIRED, ChronoUnit.SECONDS);
-
        return Jwts.builder()
-               .signWith(JwtProperties.SECRET, SignatureAlgorithm.HS256)
+               .signWith(SignatureAlgorithm.HS256, Encoders.BASE64.encode(secret.getBytes()))
                .setSubject(email)
                .setIssuedAt(Date.from(issuedAt))
                .setExpiration(Date.from(expirtion))
                .compact();
    }
 
-     private static String generateRefreshToken(String email){
-         Instant issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-         Instant expirtion = issuedAt.plus(JwtProperties.EXPIRED, ChronoUnit.SECONDS);
-
-         return Jwts.builder()
-                 .signWith(JwtProperties.SECRET, SignatureAlgorithm.HS256)
-                 .setSubject(email)
-                 .setIssuedAt(Date.from(issuedAt))
-                 .setExpiration(Date.from(expirtion))
-                 .compact();
-     }
-     public static String getTokenSubjectOrNull(String token) {
-         try {
-             return getAuthentication(token, JwtProperties.SECRET).getSubject();
-         } catch (ExpiredJwtException e) {
-             return null;
-         }
-     }
-
-     private static Claims getAuthentication(String token, Key secret) {
+     public Claims getAuthentication(String token) {
          return Jwts.parserBuilder()
-                 .setSigningKey(secret)
+                 .setSigningKey(secret.getBytes())
                  .build()
                  .parseClaimsJws(token)
                  .getBody();
+     }
+
+     public String getSecret() {
+         return secret;
      }
  }

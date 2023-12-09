@@ -1,0 +1,9 @@
+name: java-springboot
+app: java@17
+options:
+  ports: 8080
+context:
+  git:
+    url: https://github.com/cloudtype-examples/java-springboot.git
+    branch: main
+  preset: java-springboot

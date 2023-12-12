@@ -1,13 +1,12 @@
-package com.gapple.weeingback.domain.okay.entity.dto.request;
+package com.gapple.weeingback.domain.consultation.entity.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class OkaySubmitRequest {
+public class ConsultationCancleRequestSubmitRequest {
     @NotBlank
     private Long issuedAt; // 상담 신청 일자
 

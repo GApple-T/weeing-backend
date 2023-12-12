@@ -1,8 +1,7 @@
-package com.gapple.weeingback.domain.okay.controller;
+package com.gapple.weeingback.domain.consultation.controller;
 
-import com.gapple.weeingback.domain.okay.entity.dto.request.OkayCancleRequest;
-import com.gapple.weeingback.domain.okay.service.implementation.OkayServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
+import com.gapple.weeingback.domain.consultation.entity.dto.request.ConsultationCancleRequestCancleRequest;
+import com.gapple.weeingback.domain.consultation.service.implementation.ConsultationServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,24 +9,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.gapple.weeingback.domain.okay.entity.dto.request.OkaySubmitRequest;
+import com.gapple.weeingback.domain.consultation.entity.dto.request.ConsultationCancleRequestSubmitRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/okay")
 @RequiredArgsConstructor
-public class OkayController {
-    private final OkayServiceImpl service;
+public class ConsultationController {
+    private final ConsultationServiceImpl service;
 
     @PostMapping("/submit")
-    public ResponseEntity<Void> submitOkay(@Valid OkaySubmitRequest request){
+    public ResponseEntity<Void> submitOkay(@Valid ConsultationCancleRequestSubmitRequest request){
         service.submitOkay(request);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     // TODO /cancle
     @GetMapping("/cancle")
-    public ResponseEntity<Void> cancleOkay(@Valid OkayCancleRequest request){
+    public ResponseEntity<Void> cancleOkay(@Valid ConsultationCancleRequestCancleRequest request){
         return null;
     }
 

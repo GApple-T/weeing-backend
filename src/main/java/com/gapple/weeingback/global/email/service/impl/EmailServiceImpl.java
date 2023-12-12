@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
+
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -21,15 +23,14 @@ public class EmailServiceImpl implements EmailService {
     public String sendMail(String to){
         String authNumber = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(to);
             mimeMessageHelper.setSubject("weeing 인증번호 안내드립니다.");
             mimeMessageHelper.setText(authNumber);
+            javaMailSender.send(mimeMessage);
 
-            log.info("Success");
             return authNumber;
         } catch (Exception e) {
             log.info("fail");

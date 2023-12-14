@@ -5,6 +5,7 @@
  import io.jsonwebtoken.Jwts;
  import io.jsonwebtoken.SignatureAlgorithm;
  import io.jsonwebtoken.io.Encoders;
+ import io.jsonwebtoken.security.Keys;
  import org.springframework.beans.factory.annotation.Value;
  import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@
        Instant issuedAt = Instant.now();
        Instant expirtion = issuedAt.plus(JwtProperties.EXPIRED, ChronoUnit.SECONDS);
        return Jwts.builder()
-               .signWith(SignatureAlgorithm.HS256, Encoders.BASE64.encode(secret.getBytes()))
+               .signWith(Keys.hmacShaKeyFor(secret.getBytes()),SignatureAlgorithm.HS256)
                .setSubject(email)
                .setIssuedAt(Date.from(issuedAt))
                .setExpiration(Date.from(expirtion))

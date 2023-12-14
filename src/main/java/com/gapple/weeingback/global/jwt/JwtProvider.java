@@ -1,22 +1,16 @@
  package com.gapple.weeingback.global.jwt;
 
+ import com.gapple.weeingback.domain.auth.dto.TokenResponse;
  import io.jsonwebtoken.Claims;
- import io.jsonwebtoken.ExpiredJwtException;
  import io.jsonwebtoken.Jwts;
  import io.jsonwebtoken.SignatureAlgorithm;
- import io.jsonwebtoken.impl.DefaultJwtBuilder;
- import io.jsonwebtoken.io.Decoders;
  import io.jsonwebtoken.io.Encoders;
- import io.jsonwebtoken.security.Keys;
  import org.springframework.beans.factory.annotation.Value;
  import org.springframework.stereotype.Component;
 
- import java.nio.charset.StandardCharsets;
- import java.security.Key;
  import java.sql.Date;
  import java.time.Instant;
  import java.time.temporal.ChronoUnit;
- import java.util.Base64;
 
  @Component
  public class JwtProvider {
@@ -26,6 +20,9 @@
         this.secret = secret;
      }
 
+     public TokenResponse generateTokens(String email){
+         return new TokenResponse(generateToken(email), generateToken(email));
+     }
    public String generateToken(String email){
        Instant issuedAt = Instant.now();
        Instant expirtion = issuedAt.plus(JwtProperties.EXPIRED, ChronoUnit.SECONDS);

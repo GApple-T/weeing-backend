@@ -1,6 +1,6 @@
 package com.gapple.weeingback.domain.member.entity;
 
-import com.gapple.weeingback.domain.okay.entity.Okay;
+import com.gapple.weeingback.domain.consultation.entity.Consultation;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -26,15 +26,15 @@ public class Member {
 
   @OneToOne
   @JoinColumn(name = "check_id")
-  private Okay okay;
+  private Consultation consultation;
 
   public Member(){}
 
-  public Member(Long id, String name, String email, String password, Okay okay) {
+  public Member(Long id, String name, String email, String password, Consultation consultation) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.password = password;
-    this.okay = okay;
+    this.consultation = consultation;
   }
 }

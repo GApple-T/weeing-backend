@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.okay.entity;
+package com.gapple.weeingback.domain.consultation.entity;
 
 import com.gapple.weeingback.domain.member.entity.Member;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Entity
 @Builder
 @Getter @Setter
-public class Okay {
+public class Consultation {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
@@ -30,14 +30,14 @@ public class Okay {
   @OneToOne(mappedBy = "okay")
   private Member member;
 
-  public Okay(Long issuedAt, Long startAt){
+  public Consultation(Long issuedAt, Long startAt){
     this.issuedAt = issuedAt;
     this.startAt = startAt;
   }
 
-  public Okay(){}
+  public Consultation(){}
 
-  public Okay(Long id, Long issuedAt, Long startAt, boolean isAccess, boolean isTrue, Member member) {
+  public Consultation(Long id, Long issuedAt, Long startAt, boolean isAccess, boolean isTrue, Member member) {
     this.id = id;
     this.issuedAt = issuedAt;
     this.startAt = startAt;

@@ -25,7 +25,7 @@ public class Member {
   private String password;
 
   @OneToOne
-  @JoinColumn(name = "check_id")
+  @JoinColumn(name = "consultation_id")
   private Consultation consultation;
 
   public Member(){}

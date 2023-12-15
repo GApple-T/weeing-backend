@@ -23,12 +23,4 @@ public class ConsultationController {
         service.submitOkay(request);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-
-    // TODO /cancle
-    @GetMapping("/cancle")
-    public ResponseEntity<Void> cancleOkay(@Valid ConsultationCancleRequestCancleRequest request){
-        return null;
-    }
-
-    // TODO /update
 }

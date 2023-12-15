@@ -18,7 +18,7 @@ public class ConsultingController {
 
     @PostMapping("/submit")
     public ResponseEntity<Void> submitOkay(@Valid ConsultationCancleRequestSubmitRequest request){
-        service.submitOkay(request);
+        service.submitConsulting(request);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

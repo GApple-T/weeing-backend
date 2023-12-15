@@ -3,6 +3,7 @@ package com.gapple.weeingback.domain.consulting.service.implementation;
 import com.gapple.weeingback.domain.consulting.entity.Consulting;
 import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultationCancleRequestSubmitRequest;
 
+import com.gapple.weeingback.domain.consulting.service.ConsultingService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -14,11 +15,11 @@ import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
-public class ConsultingServiceImpl {
+public class ConsultingServiceImpl implements ConsultingService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void submitOkay(ConsultationCancleRequestSubmitRequest request){
+    public void submitConsulting(ConsultationCancleRequestSubmitRequest request){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberByEmail(email);
         Consulting consulting = member.getConsulting();

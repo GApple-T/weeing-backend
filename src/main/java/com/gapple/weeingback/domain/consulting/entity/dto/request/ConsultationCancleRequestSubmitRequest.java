@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.consultation.entity.dto.request;
+package com.gapple.weeingback.domain.consulting.entity.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,4 @@
-package com.gapple.weeingback.domain.consultation.entity;
-
-import com.gapple.weeingback.domain.member.entity.Member;
+package com.gapple.weeingback.domain.consulting.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +11,7 @@ import lombok.Setter;
 @Builder
 @Getter @Setter
 @AllArgsConstructor
-public class Consultation {
+public class Consulting {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
@@ -26,10 +24,10 @@ public class Consultation {
   @Column(nullable = false)
   private boolean isAccess; // 선생님이 승인했는지
 
-  public Consultation(Long issuedAt, Long startAt){
+  public Consulting(Long issuedAt, Long startAt){
     this.issuedAt = issuedAt;
     this.startAt = startAt;
   }
 
-  public Consultation(){}
+  public Consulting(){}
 }

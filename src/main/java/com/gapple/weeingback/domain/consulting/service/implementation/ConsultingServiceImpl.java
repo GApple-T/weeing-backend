@@ -27,7 +27,7 @@ public class ConsultingServiceImpl implements ConsultingService {
         Member member = memberRepository.findMemberById(UUID.fromString(id));
 
         if(member.getConsulting() != null){
-            member.setConsulting(new Consulting(Instant.now().toEpochMilli(), request.getStartat()));
+            member.setConsulting(new Consulting(Instant.now().toEpochMilli(), request.getClassTime()));
         }
 
         memberRepository.save(member);

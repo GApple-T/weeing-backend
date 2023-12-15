@@ -35,8 +35,9 @@ public class JwtFilter extends OncePerRequestFilter {
         Member member = null;
 
         if(header != null && header.startsWith("Bearer ")){
-            header.substring(7);
-            authentication =  jwtProvider.getAuthentication(request.getHeader("Authorization"));
+            header = header.substring("Bearer ".length());
+
+            authentication =  jwtProvider.getAuthentication(header);
 
             member = memberRepository.findMemberByEmail(authentication.getSubject());
 

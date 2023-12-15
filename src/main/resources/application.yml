@@ -32,3 +32,4 @@ spring:
 
 jwt:
   secret: MjFmcnlmc2RmamE3OXlZRnNkRnN5ZGY5eWZzZGhnSGdxZWc0Mwo=
+  expired: 86400

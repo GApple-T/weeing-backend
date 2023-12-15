@@ -19,17 +19,17 @@ public class AuthController {
     private final EmailServiceImpl emailService;
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody MemberJoinRequest request){
+    public ResponseEntity<?> join(@Valid @RequestBody AuthJoinRequest request){
         return authService.join(request);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody MemberLoginRequest request){
+    public ResponseEntity<AuthLoginResponse> login(@Valid @RequestBody AuthLoginRequest request){
         return authService.login(request);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponse> refresh(@Valid @RequestBody TokenRequest request){
+    public ResponseEntity<AuthLoginResponse> refresh(@Valid @RequestBody TokenRequest request){
         return authService.refresh(request);
     }
 

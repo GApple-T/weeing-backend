@@ -5,20 +5,21 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultationCancleRequestSubmitRequest;
+import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingSubmitRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/okay")
+@RequestMapping("/api/consulting")
 @RequiredArgsConstructor
 public class ConsultingController {
     private final ConsultingServiceImpl service;
 
     @PostMapping("/submit")
-    public ResponseEntity<Void> submitOkay(@Valid ConsultationCancleRequestSubmitRequest request){
-        service.submitOkay(request);
+    public ResponseEntity<Void> submitOkay(@Valid @RequestBody ConsultingSubmitRequest request){
+        service.submitConsulting(request);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

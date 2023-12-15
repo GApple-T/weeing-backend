@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MemberController {
 }

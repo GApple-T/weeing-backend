@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthServiceImpl authService;
@@ -33,13 +33,8 @@ public class AuthController {
         return authService.refresh(request);
     }
 
-    @PostMapping("/certify")
+    @PostMapping("/mailauth")
     public ResponseEntity<String> emailCertify(@Valid @RequestBody EmailCertifyRequest request){
         return ResponseEntity.ok(emailService.sendMail(request.getEmail()));
     }
-
-//    @PostMapping("/find")
-//    public void findMyAccount(){
-//        emailService.sendMail("me@xolving.com", "안보내지면 귀찮은데?", "안보내지면 귀찮은 과정이 있을 예정임");
-//    }
 }

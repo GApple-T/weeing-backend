@@ -6,13 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ConsultationCancleRequestSubmitRequest {
+public class ConsultingSubmitRequest {
     @NotBlank
-    private Long issuedAt; // 상담 신청 일자
-
-    @NotBlank
-    private Long startAt; // 언제 가야하는지
-
-    @NotBlank
-    private String email;
+    private Long startAt;
 }

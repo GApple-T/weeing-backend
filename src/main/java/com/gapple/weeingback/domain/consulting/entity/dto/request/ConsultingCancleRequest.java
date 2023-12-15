@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ConsultationCancleRequest {
+public class ConsultingCancleRequest {
     @Email
     private String email;
 }

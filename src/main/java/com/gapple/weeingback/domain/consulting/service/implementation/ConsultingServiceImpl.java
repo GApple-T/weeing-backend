@@ -1,7 +1,7 @@
 package com.gapple.weeingback.domain.consulting.service.implementation;
 
 import com.gapple.weeingback.domain.consulting.entity.Consulting;
-import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultationSubmitRequest;
+import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingSubmitRequest;
 import com.gapple.weeingback.domain.consulting.service.ConsultingService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
@@ -18,7 +18,7 @@ public class ConsultingServiceImpl implements ConsultingService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void submitConsulting(ConsultationSubmitRequest request){
+    public void submitConsulting(ConsultingSubmitRequest request){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberByEmail(email);
         Consulting consulting = member.getConsulting();

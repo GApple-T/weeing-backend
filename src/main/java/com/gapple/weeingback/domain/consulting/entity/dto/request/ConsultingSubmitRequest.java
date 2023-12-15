@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ConsultationSubmitRequest {
+public class ConsultingSubmitRequest {
     @NotBlank
     private Long startAt;
 }

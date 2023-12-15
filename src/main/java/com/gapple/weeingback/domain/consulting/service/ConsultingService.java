@@ -1,7 +1,7 @@
 package com.gapple.weeingback.domain.consulting.service;
 
-import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultationCancleRequestSubmitRequest;
+import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultationSubmitRequest;
 
 public interface ConsultingService {
-    void submitConsulting(ConsultationCancleRequestSubmitRequest request);
+    void submitConsulting(ConsultationSubmitRequest request);
 }

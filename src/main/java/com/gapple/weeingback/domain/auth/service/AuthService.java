@@ -6,5 +6,4 @@ import org.springframework.http.ResponseEntity;
 public interface AuthService {
     ResponseEntity<AuthJoinResponse> join(AuthJoinRequest request);
     ResponseEntity login(AuthLoginRequest request);
-    ResponseEntity<AuthLoginResponse> refresh(TokenRequest request);
 }

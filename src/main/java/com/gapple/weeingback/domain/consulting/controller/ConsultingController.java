@@ -1,5 +1,6 @@
 package com.gapple.weeingback.domain.consulting.controller;
 
+import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingSubmitResponse;
 import com.gapple.weeingback.domain.consulting.service.implementation.ConsultingServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,7 @@ public class ConsultingController {
     private final ConsultingServiceImpl service;
 
     @PostMapping("/submit")
-    public ResponseEntity<Void> submitOkay(@Valid @RequestBody ConsultingSubmitRequest request){
-        service.submitConsulting(request);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    public ResponseEntity<ConsultingSubmitResponse> submitOkay(@Valid @RequestBody ConsultingSubmitRequest request){
+        return service.submitConsulting(request);
     }
 }

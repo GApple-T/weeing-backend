@@ -1,15 +1,13 @@
 package com.gapple.weeingback.domain.consulting.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Table
 @Entity
 @Builder
 @Getter @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class Consulting {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +26,4 @@ public class Consulting {
     this.issuedAt = issuedAt;
     this.startAt = startAt;
   }
-
-  public Consulting(){}
 }

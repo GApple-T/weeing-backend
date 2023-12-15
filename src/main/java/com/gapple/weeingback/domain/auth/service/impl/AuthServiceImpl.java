@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
         if(passwordEncoder.matches(request.getPassword(), member.getPassword())){
             String id = member.getId().toString();
-            String role = member.getRole().getName();
+            String role = member.getRole().toString();
 
             log.info(id + " " + role);
 
@@ -52,10 +52,5 @@ public class AuthServiceImpl implements AuthService {
             String token = jwtProvider.generateToken(authentication);
             return ResponseEntity.ok(new AuthLoginResponse(token, "ok", null));
         } else throw new IllegalArgumentException();
-    }
-
-    @Override
-    public ResponseEntity<AuthLoginResponse> refresh(TokenRequest tokenRequest) {
-        return null;
     }
 }

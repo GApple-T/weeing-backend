@@ -26,13 +26,13 @@
      }
 
      public String generateToken(Authentication authentication) {
-         return generateToken(authentication.getPrincipal().toString(), authentication.getAuthorities());
+         return generateToken(authentication.getPrincipal().toString(), authentication.getCredentials().toString());
      }
 
-     public String generateToken(String username, Collection<? extends GrantedAuthority> authorities) {
+     public String generateToken(String username, String role) {
          return Jwts.builder()
                  .setSubject(username)
-                 .claim("role", authorities)
+                 .claim("role", role)
                  .setExpiration(getExpireDate())
                  .signWith(SignatureAlgorithm.HS256, secretKey)
                  .compact();

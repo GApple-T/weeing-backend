@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConsultingSubmitRequest {
-    private Long startat;
+public class ConsultingSubmitResponse {
+    private String success;
 }

@@ -19,7 +19,7 @@ public class AuthController {
     private final EmailServiceImpl emailService;
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody AuthJoinRequest request){
+    public ResponseEntity<AuthJoinResponse> join(@Valid @RequestBody AuthJoinRequest request){
         return authService.join(request);
     }
 
@@ -27,12 +27,6 @@ public class AuthController {
     public ResponseEntity<AuthLoginResponse> login(@Valid @RequestBody AuthLoginRequest request){
         return authService.login(request);
     }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<AuthLoginResponse> refresh(@Valid @RequestBody TokenRequest request){
-        return authService.refresh(request);
-    }
-
     @PostMapping("/mailauth")
     public ResponseEntity<String> emailCertify(@Valid @RequestBody EmailCertifyRequest request){
         return ResponseEntity.ok(emailService.sendMail(request.getEmail()));

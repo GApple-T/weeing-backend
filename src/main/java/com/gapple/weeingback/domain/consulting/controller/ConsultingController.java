@@ -12,7 +12,7 @@ import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingSubm
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/okay")
+@RequestMapping("/api/consulting")
 @RequiredArgsConstructor
 public class ConsultingController {
     private final ConsultingServiceImpl service;

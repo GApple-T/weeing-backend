@@ -32,3 +32,19 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
+
+    - name: excuting remote ssh commands
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.REMOTE_IP }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.REMOTE_PRIVATE_KEY }}
+        port: ${{ secrets.REMOTE_SSH_PORT }}
+        script: |
+          cd /home/ubuntu/salt-bot
+          pm2 kill
+          npm i --force
+          npm run build
+          pm2 start dist/index.js
+            
+          

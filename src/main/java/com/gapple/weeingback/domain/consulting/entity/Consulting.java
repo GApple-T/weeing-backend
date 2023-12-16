@@ -1,33 +1,29 @@
 package com.gapple.weeingback.domain.consulting.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Table
 @Entity
 @Builder
 @Getter @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class Consulting {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
-  private Long issuedAt; // 상담 신청 일자
+  private Long issuedAt;
 
   @Column(nullable = false)
-  private Long startAt; // 언제 가야하는지
+  private int classTime;
 
   @Column(nullable = false)
-  private boolean isAccess; // 선생님이 승인했는지
+  private boolean isAccess;
 
-  public Consulting(Long issuedAt, Long startAt){
+  public Consulting(Long issuedAt, int classTime){
     this.issuedAt = issuedAt;
-    this.startAt = startAt;
+    this.classTime = classTime;
   }
-
-  public Consulting(){}
 }

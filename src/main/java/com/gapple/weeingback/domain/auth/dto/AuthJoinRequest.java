@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MemberJoinRequest {
+public class AuthJoinRequest {
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gsm.hs.kr$")
     @NotBlank
     private String email;

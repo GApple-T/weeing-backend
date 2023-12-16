@@ -4,7 +4,6 @@ import com.gapple.weeingback.domain.auth.dto.*;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    ResponseEntity join(MemberJoinRequest request);
-    ResponseEntity login(MemberLoginRequest request);
-    ResponseEntity<TokenResponse> refresh(TokenRequest request);
+    ResponseEntity<AuthJoinResponse> join(AuthJoinRequest request);
+    ResponseEntity login(AuthLoginRequest request);
 }

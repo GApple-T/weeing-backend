@@ -2,13 +2,15 @@ package com.gapple.weeingback.domain.auth.service.impl;
 
 import com.gapple.weeingback.domain.auth.dto.*;
 import com.gapple.weeingback.domain.auth.service.AuthService;
+import com.gapple.weeingback.domain.member.entity.AccessRole;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,29 +24,33 @@ public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional(rollbackFor = RuntimeException.class)
-    public ResponseEntity<?> join(MemberJoinRequest req){
+    public ResponseEntity<AuthJoinResponse> join(AuthJoinRequest req){
         if(!memberRepository.existsMemberByEmail(req.getEmail())) {
             Member member = Member.builder()
                     .email(req.getEmail())
                     .password(passwordEncoder.encode(req.getPassword()))
+                    .role(AccessRole.STUDENT)
                     .build();
 
             memberRepository.save(member);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok(new AuthJoinResponse("ok", null));
         } else throw new RuntimeException();
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
-    public ResponseEntity<TokenResponse> login(MemberLoginRequest request){
+    public ResponseEntity<AuthLoginResponse> login(AuthLoginRequest request){
         Member member = memberRepository.findMemberByEmail(request.getEmail());
 
         if(passwordEncoder.matches(request.getPassword(), member.getPassword())){
-            return ResponseEntity.ok(jwtProvider.generateTokens(request.getEmail()));
-        } else throw new RuntimeException();
-    }
+            String id = member.getId().toString();
+            String role = member.getRole().toString();
 
-    @Override
-    public ResponseEntity<TokenResponse> refresh(TokenRequest tokenRequest) {
-        return null;
+            log.info(id + " " + role);
+
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(id, role);
+            String token = jwtProvider.generateToken(authentication);
+            return ResponseEntity.ok(new AuthLoginResponse(token, "ok", null));
+        } else throw new IllegalArgumentException();
     }
 }

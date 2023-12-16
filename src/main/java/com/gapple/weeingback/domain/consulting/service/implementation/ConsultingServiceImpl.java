@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -36,16 +37,33 @@ public class ConsultingServiceImpl implements ConsultingService {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Member member = memberRepository.findMemberById(UUID.fromString(id));
+            AtomicInteger sameTime = new AtomicInteger(0);
+            List<Consulting> consults = member.getConsulting();
+            consults.forEach(consulting -> {
+                if(consulting.getClassTime() == request.getClassTime()){
+                    sameTime.set(consulting.getClassTime());
+                }
+            });
 
-        Consulting consulting = new Consulting(Instant.now().toEpochMilli(), request.getClassTime());
-        consulting.setMember(member);
+            if(sameTime.get() != 0){
+                throw new IllegalArgumentException();
+            } else {
 
-        member.addConsulting(consulting);
+                // 해당 시간이 니가 이미 보낸 신청이 있으면 거절할건데 로직
 
-        memberRepository.save(member);
-        consultingRepository.save(consulting);
+                Consulting consulting = Consulting.toConsulting(
+                        Instant.now().toEpochMilli(),
+                        request.getClassTime(),
+                        request.getDescription());
 
-        return ResponseEntity.accepted().body(new ConsultingSubmitResponse("ok"));
+                consulting.setMember(member);
+                member.addConsulting(consulting);
+
+                memberRepository.save(member);
+                consultingRepository.save(consulting);
+
+                return ResponseEntity.accepted().body(new ConsultingSubmitResponse("ok"));
+            }
     }
 
     @Override
@@ -54,15 +72,6 @@ public class ConsultingServiceImpl implements ConsultingService {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
         List<ToConsultingResponse> consultingResponses = new ArrayList<>();
-
-        List<Consulting> consults = consultingRepository.findConsultingByMember_Id(UUID.fromString(id));
-        consults.forEach(consulting -> {
-            consultingResponses.add(new ToConsultingResponse(
-                    consulting.getId().toString(),
-                    consulting.getIssuedAt(),
-                    consulting.getClassTime(),
-                    consulting.getDescription()));
-        });
 
         return ResponseEntity.ok().body(new ConsultingShowResponse(consultingResponses, "okay"));
     }

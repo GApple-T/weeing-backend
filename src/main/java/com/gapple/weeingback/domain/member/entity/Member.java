@@ -5,7 +5,10 @@ import com.gapple.weeingback.domain.consulting.entity.Consulting;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +18,7 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class Member implements GrantedAuthority {
   @Id
   @GeneratedValue(generator = "uuid2", strategy = GenerationType.IDENTITY)
   @GenericGenerator(name="uuid2", strategy = "uuid2")
@@ -42,5 +45,10 @@ public class Member {
 
   public void addConsulting(Consulting consulting){
     this.consulting.add(consulting);
+  }
+
+  @Override
+  public String getAuthority() {
+    return role;
   }
 }

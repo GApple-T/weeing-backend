@@ -37,8 +37,13 @@ public class Consulting {
   private Member member;
 
 
-  public Consulting(Long issuedAt, int classTime){
+  public Consulting(Long issuedAt, int classTime, String description) {
     this.issuedAt = issuedAt;
     this.classTime = classTime;
+    this.description = description;
+  }
+
+  public static Consulting toConsulting(Long issuedAt, int classTime, String description){
+    return new Consulting(issuedAt, classTime, description);
   }
 }

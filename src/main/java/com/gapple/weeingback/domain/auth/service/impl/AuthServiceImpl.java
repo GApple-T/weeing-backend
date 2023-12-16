@@ -31,7 +31,9 @@ public class AuthServiceImpl implements AuthService {
             Member member = Member.builder()
                     .email(req.getEmail())
                     .password(passwordEncoder.encode(req.getPassword()))
-                    .role(AccessRole.STUDENT)
+                    .name(req.getName())
+                    .number(req.getNumber())
+                    .role(AccessRole.STUDENT.getName())
                     .build();
 
             memberRepository.save(member);

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.UUID;
 
 @Table
@@ -20,18 +21,26 @@ public class Member {
   @GenericGenerator(name="uuid2", strategy = "uuid2")
   private UUID id;
 
+  @Column(columnDefinition = "VARCHAR(50)", nullable = false)
+  private String email;
+
   @Column(columnDefinition = "VARCHAR(15)")
   private String name;
 
-  @Column(columnDefinition = "VARCHAR(50)", nullable = false)
-  private String email;
+  @Column(columnDefinition = "INTEGER")
+  private Long number;
 
   @Column(columnDefinition = "VARCHAR(80)", nullable = false)
   private String password;
 
-  private AccessRole role;
+  @Column(columnDefinition = "VARCHAR(80)", nullable = false)
+  private String role;
 
-  @OneToOne
-  @JoinColumn(name = "consultation_id")
-  private Consulting consulting;
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn(name = "consulting_id")
+  private List<Consulting> consulting;
+
+  public void addConsulting(Consulting consulting){
+    this.consulting.add(consulting);
+  }
 }

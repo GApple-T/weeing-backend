@@ -22,7 +22,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -62,13 +61,11 @@ public class ConsultingServiceImpl implements ConsultingService {
         List<ToConsultingResponse> consultingResponses = new ArrayList<>();
 
         List<Consulting> consults = consultingRepository.findConsultingByMember_Id(UUID.fromString(id));
-        consults.forEach(consulting -> {
-            consultingResponses.add(new ToConsultingResponse(
-                    consulting.getId().toString(),
-                    consulting.getIssuedAt(),
-                    consulting.getClassTime(),
-                    consulting.getDescription()));
-        });
+        consults.forEach(consulting -> consultingResponses.add(new ToConsultingResponse(
+                consulting.getId().toString(),
+                consulting.getIssuedAt(),
+                consulting.getClassTime(),
+                consulting.getDescription())));
 
         return ResponseEntity.ok().body(new ConsultingShowResponse(consultingResponses, "okay"));
     }

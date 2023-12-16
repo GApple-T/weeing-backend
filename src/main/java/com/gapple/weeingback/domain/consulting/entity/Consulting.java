@@ -32,11 +32,6 @@ public class Consulting {
   @Column(columnDefinition = "VARCHAR(3000)")
   private String description;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "MEMBER_ID")
-  private Member member;
-
-
   public Consulting(Long issuedAt, int classTime, String description) {
     this.issuedAt = issuedAt;
     this.classTime = classTime;

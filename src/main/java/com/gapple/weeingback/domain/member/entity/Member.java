@@ -1,5 +1,6 @@
 package com.gapple.weeingback.domain.member.entity;
 
+import com.gapple.weeingback.domain.boardgame.entity.Boardgame;
 import com.gapple.weeingback.domain.consulting.entity.Consulting;
 
 import jakarta.persistence.*;
@@ -42,6 +43,10 @@ public class Member implements GrantedAuthority {
   @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "consulting_id")
   private List<Consulting> consulting;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "boardgame_id")
+  private Boardgame boardgames;
 
   public void addConsulting(Consulting consulting){
     this.consulting.add(consulting);

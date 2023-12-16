@@ -44,11 +44,10 @@ public class ConsultingServiceImpl implements ConsultingService {
                 request.getClassTime(),
                 request.getDescription());
 
-        consulting.setMember(member);
         member.addConsulting(consulting);
 
-        memberRepository.save(member);
         consultingRepository.save(consulting);
+        memberRepository.save(member);
 
         return ResponseEntity.accepted().body(new ConsultingSubmitResponse("ok"));
     }
@@ -57,10 +56,11 @@ public class ConsultingServiceImpl implements ConsultingService {
     @Transactional
     public ResponseEntity<ConsultingShowResponse> showConsulting() {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findMemberById(UUID.fromString(id));
 
         List<ToConsultingResponse> consultingResponses = new ArrayList<>();
 
-        List<Consulting> consults = consultingRepository.findConsultingByMember_Id(UUID.fromString(id));
+        List<Consulting> consults = member.getConsulting();
         consults.forEach(consulting -> consultingResponses.add(new ToConsultingResponse(
                 consulting.getId().toString(),
                 consulting.getIssuedAt(),

@@ -27,7 +27,7 @@ public class AuthController {
     public ResponseEntity<AuthLoginResponse> login(@Valid @RequestBody AuthLoginRequest request){
         return authService.login(request);
     }
-    @PostMapping("/mailauth")
+    @PostMapping("/send-auth")
     public ResponseEntity<String> emailCertify(@Valid @RequestBody EmailCertifyRequest request){
         return ResponseEntity.ok(emailService.sendMail(request.getEmail()));
     }

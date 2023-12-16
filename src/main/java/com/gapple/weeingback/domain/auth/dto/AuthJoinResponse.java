@@ -9,5 +9,4 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AuthJoinResponse {
     private String success;
-    private String error;
 }

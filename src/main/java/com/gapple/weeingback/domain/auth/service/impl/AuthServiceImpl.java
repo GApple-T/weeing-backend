@@ -5,6 +5,7 @@ import com.gapple.weeingback.domain.auth.service.AuthService;
 import com.gapple.weeingback.domain.member.entity.AccessRole;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
+import com.gapple.weeingback.global.email.service.impl.EmailServiceImpl;
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+    private final EmailServiceImpl emailService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
@@ -33,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
                     .build();
 
             memberRepository.save(member);
-            return ResponseEntity.ok(new AuthJoinResponse("ok", null));
+            return ResponseEntity.ok(new AuthJoinResponse("ok"));
         } else throw new RuntimeException();
     }
 
@@ -50,7 +52,12 @@ public class AuthServiceImpl implements AuthService {
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(id, role);
             String token = jwtProvider.generateToken(authentication);
-            return ResponseEntity.ok(new AuthLoginResponse(token, "ok", null));
+            return ResponseEntity.ok(new AuthLoginResponse(token, "ok"));
         } else throw new IllegalArgumentException();
+    }
+
+    @Override
+    public ResponseEntity sendAuth(EmailCertifyRequest request) {
+        return ResponseEntity.ok(emailService.sendMail(request.getEmail()));
     }
 }

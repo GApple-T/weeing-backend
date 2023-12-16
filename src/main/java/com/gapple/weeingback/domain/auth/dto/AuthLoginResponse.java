@@ -10,6 +10,4 @@ public class AuthLoginResponse {
     private String token;
 
     private String success;
-
-    private String error;
 }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthServiceImpl authService;
-    private final EmailServiceImpl emailService;
 
     @PostMapping("/join")
     public ResponseEntity<AuthJoinResponse> join(@Valid @RequestBody AuthJoinRequest request){
@@ -29,6 +28,6 @@ public class AuthController {
     }
     @PostMapping("/send-auth")
     public ResponseEntity<String> emailCertify(@Valid @RequestBody EmailCertifyRequest request){
-        return ResponseEntity.ok(emailService.sendMail(request.getEmail()));
+        return authService.sendAuth(request);
     }
 }

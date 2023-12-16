@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 public class EmailCertifyRequest {
     @NotBlank
     private String email;
+
+    private String success;
 }

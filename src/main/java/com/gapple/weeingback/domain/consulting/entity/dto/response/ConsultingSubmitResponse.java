@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.consulting.entity.dto.request;
+package com.gapple.weeingback.domain.consulting.entity.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

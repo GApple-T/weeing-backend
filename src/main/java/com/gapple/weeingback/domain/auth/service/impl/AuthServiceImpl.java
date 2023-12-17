@@ -12,9 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +36,9 @@ public class AuthServiceImpl implements AuthService {
             Member member = Member.builder()
                     .email(req.getEmail())
                     .password(passwordEncoder.encode(req.getPassword()))
-                    .role(AccessRole.STUDENT)
+                    .name(req.getName())
+                    .number(req.getNumber())
+                    .role(AccessRole.ROLE_STUDENT.getName())
                     .build();
 
             memberRepository.save(member);
@@ -45,12 +52,13 @@ public class AuthServiceImpl implements AuthService {
 
         if(passwordEncoder.matches(request.getPassword(), member.getPassword())){
             String id = member.getId().toString();
-            String role = member.getRole().toString();
+            String password = member.getPassword();
 
-            log.info(id + " " + role);
+            List<AccessRole> roles = new ArrayList<>();
+            roles.add(AccessRole.valueOf(member.getRole()));
 
             Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(id, role);
+                    new UsernamePasswordAuthenticationToken(id, password, roles);
             String token = jwtProvider.generateToken(authentication);
             return ResponseEntity.ok(new AuthLoginResponse(token, "ok"));
         } else throw new IllegalArgumentException();

@@ -1,7 +1,12 @@
 package com.gapple.weeingback.domain.consulting.entity;
 
+import com.gapple.weeingback.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.List;
+import java.util.UUID;
 
 @Table
 @Entity
@@ -10,8 +15,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Consulting {
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @Id
+  @GeneratedValue(generator = "uuid2", strategy = GenerationType.IDENTITY)
+  @GenericGenerator(name="uuid2", strategy = "uuid2")
+  private UUID id;
 
   @Column(nullable = false)
   private Long issuedAt;
@@ -22,8 +29,16 @@ public class Consulting {
   @Column(nullable = false)
   private boolean isAccess;
 
-  public Consulting(Long issuedAt, int classTime){
+  @Column(columnDefinition = "VARCHAR(3000)")
+  private String description;
+
+  public Consulting(Long issuedAt, int classTime, String description) {
     this.issuedAt = issuedAt;
     this.classTime = classTime;
+    this.description = description;
+  }
+
+  public static Consulting toConsulting(Long issuedAt, int classTime, String description){
+    return new Consulting(issuedAt, classTime, description);
   }
 }

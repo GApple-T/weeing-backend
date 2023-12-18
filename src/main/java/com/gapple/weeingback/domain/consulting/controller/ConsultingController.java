@@ -4,7 +4,7 @@ import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingCanc
 import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingCancleResponse;
 import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingShowResponse;
 import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingSubmitResponse;
-import com.gapple.weeingback.domain.consulting.service.implementation.ConsultingServiceImpl;
+import com.gapple.weeingback.domain.consulting.service.ConsultingService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,20 +15,20 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/consulting")
 @RequiredArgsConstructor
 public class ConsultingController {
-    private final ConsultingServiceImpl service;
+    private final ConsultingService consultingService;
 
     @PostMapping("/submit")
     public ResponseEntity<ConsultingSubmitResponse> submitConsulting(@Valid @RequestBody ConsultingSubmitRequest request){
-        return service.submitConsulting(request);
+        return consultingService.submitConsulting(request);
     }
 
     @GetMapping("/list")
     public ResponseEntity<ConsultingShowResponse> showConsulting(){
-        return service.showConsulting();
+        return consultingService.showConsulting();
     }
 
     @GetMapping("/cancle")
     public ResponseEntity<ConsultingCancleResponse> cancleConsulting(@Valid @RequestBody ConsultingCancleRequest request){
-        return service.cancleConsulting(request);
+        return consultingService.cancleConsulting(request);
     }
 }

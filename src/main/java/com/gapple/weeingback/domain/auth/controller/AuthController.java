@@ -1,6 +1,7 @@
 package com.gapple.weeingback.domain.auth.controller;
 
 import com.gapple.weeingback.domain.auth.dto.*;
+import com.gapple.weeingback.domain.auth.service.AuthService;
 import com.gapple.weeingback.domain.auth.service.impl.AuthServiceImpl;
 import com.gapple.weeingback.global.email.service.impl.EmailServiceImpl;
 import jakarta.validation.Valid;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     @PostMapping("/join")
     public ResponseEntity<AuthJoinResponse> join(@Valid @RequestBody AuthJoinRequest request){

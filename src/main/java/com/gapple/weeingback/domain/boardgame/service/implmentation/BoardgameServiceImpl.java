@@ -40,7 +40,9 @@ public class BoardgameServiceImpl implements BoardgameService {
                 .joined(0L)
                 .build();
 
-        boardgameRepository.save(boardgame);
+        if(member.getBoardgame() == null){
+            boardgameRepository.save(boardgame);
+        } else throw new IllegalArgumentException();
 
         return ResponseEntity.ok().body(new BoardgameCreateResponse("ok"));
     }
@@ -49,9 +51,9 @@ public class BoardgameServiceImpl implements BoardgameService {
     public ResponseEntity<BoardgameShowResponse> showAllBoardgame() {
         List<Boardgame> boardgames = boardgameRepository.findAll();
         List<ToBoardgameDto> boardgameDtos = new ArrayList<>();
-        boardgames.forEach(boardgame -> {
-            boardgameDtos.add(boardgame.toDto(boardgame));
-        });
+        boardgames.forEach(boardgame ->
+            boardgameDtos.add(boardgame.toDto(boardgame))
+        );
 
         return ResponseEntity.ok().body(new BoardgameShowResponse("ok", boardgameDtos));
     }

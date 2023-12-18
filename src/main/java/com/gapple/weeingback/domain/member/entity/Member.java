@@ -3,6 +3,7 @@ package com.gapple.weeingback.domain.member.entity;
 import com.gapple.weeingback.domain.boardgame.entity.Boardgame;
 import com.gapple.weeingback.domain.consulting.entity.Consulting;
 
+import com.gapple.weeingback.domain.diary.entity.Diary;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -48,8 +49,16 @@ public class Member implements GrantedAuthority {
   @JoinColumn(name = "boardgame_id")
   private Boardgame boardgame;
 
+  @OneToMany
+  @JoinColumn(name = "diary_id")
+  private List<Diary> diaries;
+
   public void addConsulting(Consulting consulting){
     this.consulting.add(consulting);
+  }
+
+  public void addDiary(Diary diary){
+    this.diaries.add(diary);
   }
 
   @Override

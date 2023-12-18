@@ -8,5 +8,5 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class ScheduleCreateRequest {
-
+    private long classTime;
 }

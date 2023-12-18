@@ -1,6 +1,7 @@
 package com.gapple.weeingback.domain.auth.service.impl;
 
 import com.gapple.weeingback.domain.auth.dto.*;
+import com.gapple.weeingback.domain.auth.repository.RefreshTokenRepository;
 import com.gapple.weeingback.domain.auth.service.AuthService;
 import com.gapple.weeingback.domain.member.entity.AccessRole;
 import com.gapple.weeingback.domain.member.entity.Member;
@@ -9,15 +10,18 @@ import com.gapple.weeingback.global.email.service.impl.EmailServiceImpl;
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional(rollbackFor = RuntimeException.class)
     public ResponseEntity<AuthJoinResponse> join(AuthJoinRequest req){
@@ -62,6 +67,21 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
         } else throw new IllegalArgumentException();
     }
+
+    public ResponseEntity<?> logout(String authentication, String refresh) {
+        refresh = jwtProvider.resolveToken(refresh);
+
+        if(jwtProvider.validateToken(refresh)){
+            Authentication refreshToken = jwtProvider.getAuthentication(refresh);
+            UUID memberId = UUID.fromString(refreshToken.getName());
+            RefreshTokenrefreshTokenRepository.findRefreshTokenById(memberId);
+
+            SecurityContextHolder.getContext().getAuthentication().getName()
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else throw new RuntimeException();
+    }
+
+
 
     @Override
     public ResponseEntity<String> sendAuth(EmailCertifyRequest request) {

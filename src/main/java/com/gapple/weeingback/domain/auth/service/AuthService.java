@@ -7,6 +7,6 @@ import org.springframework.http.ResponseEntity;
 public interface AuthService {
     ResponseEntity<AuthJoinResponse> join(AuthJoinRequest request);
     ResponseEntity login(AuthLoginRequest request);
-
+    ResponseEntity logout(String authentication, String refresh);
     ResponseEntity sendAuth(EmailCertifyRequest request);
 }

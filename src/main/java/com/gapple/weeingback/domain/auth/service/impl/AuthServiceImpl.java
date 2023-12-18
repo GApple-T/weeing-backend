@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity sendAuth(EmailCertifyRequest request) {
+    public ResponseEntity<String> sendAuth(EmailCertifyRequest request) {
         return ResponseEntity.ok(emailService.sendMail(request.getEmail()));
     }
 }

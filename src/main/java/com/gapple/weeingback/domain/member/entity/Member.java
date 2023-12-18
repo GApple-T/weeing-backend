@@ -46,7 +46,7 @@ public class Member implements GrantedAuthority {
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "boardgame_id")
-  private Boardgame boardgames;
+  private Boardgame boardgame;
 
   public void addConsulting(Consulting consulting){
     this.consulting.add(consulting);

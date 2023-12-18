@@ -67,12 +67,15 @@ public class ConsultingServiceImpl implements ConsultingService {
                 consulting.getClassTime(),
                 consulting.getDescription())));
 
-        return ResponseEntity.ok().body(new ConsultingShowResponse(consultingResponses, "okay"));
+        return ResponseEntity.ok().body(new ConsultingShowResponse(consultingResponses, "ok"));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ConsultingCancleResponse> cancleConsulting(ConsultingCancleRequest request) {
-        consultingRepository.removeById(UUID.fromString(request.getConsultingId()));
+//        Consulting consulting = consultingRepository.findById(UUID.fromString(request.getConsultingId()));
+//        consultingRepository.delete(consulting);
+        consultingRepository.deleteById(UUID.fromString(request.getConsultingId()));
         return ResponseEntity.ok().body(new ConsultingCancleResponse("ok"));
     }
 }

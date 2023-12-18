@@ -8,5 +8,7 @@ import java.util.UUID;
 
 public interface ConsultingRepository extends JpaRepository<Consulting, Long> {
 
-    void removeById(UUID consultingId);
+    void deleteById(UUID id);
+
+    Consulting findById(UUID id);
 }

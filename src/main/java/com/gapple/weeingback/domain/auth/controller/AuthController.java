@@ -2,8 +2,6 @@ package com.gapple.weeingback.domain.auth.controller;
 
 import com.gapple.weeingback.domain.auth.dto.*;
 import com.gapple.weeingback.domain.auth.service.AuthService;
-import com.gapple.weeingback.domain.auth.service.impl.AuthServiceImpl;
-import com.gapple.weeingback.global.email.service.impl.EmailServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +22,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthLoginResponse> login(@Valid @RequestBody AuthLoginRequest request){
+    public ResponseEntity<?> login(@Valid @RequestBody AuthLoginRequest request){
         return authService.login(request);
     }
     @PostMapping("/send-auth")
-    public ResponseEntity<String> emailCertify(@Valid @RequestBody EmailCertifyRequest request){
+    public ResponseEntity<?> emailCertify(@Valid @RequestBody EmailCertifyRequest request){
         return authService.sendAuth(request);
     }
 }

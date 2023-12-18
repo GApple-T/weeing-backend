@@ -46,7 +46,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional(rollbackFor = RuntimeException.class)
     public ResponseEntity<AuthLoginResponse> login(AuthLoginRequest request){
-        Member member = memberRepository.findMemberByEmail(request.getEmail());
+        Member member = memberRepository.findMemberByEmail(request.getEmail())
+                .orElseThrow(RuntimeException::new);
 
         if(passwordEncoder.matches(request.getPassword(), member.getPassword())){
             String id = member.getId().toString();

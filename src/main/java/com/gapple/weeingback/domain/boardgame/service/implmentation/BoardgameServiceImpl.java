@@ -2,6 +2,7 @@ package com.gapple.weeingback.domain.boardgame.service.implmentation;
 
 import com.gapple.weeingback.domain.boardgame.entity.Boardgame;
 import com.gapple.weeingback.domain.boardgame.entity.ToBoardgameDto;
+import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameDoneResponse;
 import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameCreateResponse;
 import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameShowResponse;
 import com.gapple.weeingback.domain.boardgame.repository.BoardgameRepository;
@@ -49,10 +50,19 @@ public class BoardgameServiceImpl implements BoardgameService {
     public ResponseEntity<BoardgameShowResponse> showAllBoardgame() {
         List<Boardgame> boardgames = boardgameRepository.findAll();
         List<ToBoardgameDto> boardgameDtos = new ArrayList<>();
-        boardgames.forEach(boardgame -> {
-            boardgameDtos.add(boardgame.toDto(boardgame));
-        });
+        boardgames.forEach(boardgame ->
+            boardgameDtos.add(boardgame.toDto(boardgame))
+        );
 
         return ResponseEntity.ok().body(new BoardgameShowResponse("ok", boardgameDtos));
+    }
+
+    @Override
+    public ResponseEntity<BoardgameDoneResponse> doneBoardgame(String id) {
+        Boardgame boardgame =
+                boardgameRepository.findBoardgameById(UUID.fromString(id));
+
+        boardgameRepository.delete(boardgame);
+        return ResponseEntity.ok().body(new BoardgameDoneResponse("ok"));
     }
 }

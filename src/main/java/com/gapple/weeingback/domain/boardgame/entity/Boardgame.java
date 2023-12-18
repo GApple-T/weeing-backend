@@ -37,6 +37,7 @@ public class Boardgame {
 
     public ToBoardgameDto toDto(Boardgame boardgame){
         return new ToBoardgameDto(
+                boardgame.getId().toString(),
                 boardgame.getMaxOf(),
                 boardgame.getJoined(),
                 boardgame.getCreator().toString(),

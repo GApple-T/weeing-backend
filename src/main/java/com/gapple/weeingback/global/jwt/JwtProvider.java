@@ -1,15 +1,12 @@
  package com.gapple.weeingback.global.jwt;
 
- import com.gapple.weeingback.domain.member.entity.AccessRole;
  import io.jsonwebtoken.Jwts;
  import io.jsonwebtoken.SignatureAlgorithm;
- import jakarta.servlet.http.HttpServletRequest;
  import org.springframework.beans.factory.annotation.Value;
  import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
  import org.springframework.security.core.Authentication;
- import org.springframework.security.core.GrantedAuthority;
  import org.springframework.stereotype.Component;
- import java.util.Collection;
+
  import java.util.Date;
 
  import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
@@ -17,30 +14,50 @@
  @Component
  public class JwtProvider {
      private String secretKey;
-     private Long expired;
+     private Long access;
+     private Long refresh;
 
      public JwtProvider(@Value("${jwt.secret}") String secretKey,
-                        @Value("${jwt.expired}") Long expired){
+                        @Value("${jwt.access}") Long access,
+                        @Value("${jwt.refresh}") Long refresh){
         this.secretKey = secretKey;
-        this.expired = expired;
+        this.access = access;
+        this.refresh = refresh;
      }
 
-     public String generateToken(Authentication authentication) {
-         return generateToken(authentication.getPrincipal().toString(), authentication.getCredentials().toString());
+     public String generateAccessToken(Authentication authentication) {
+         return generateToken(
+                 authentication.getPrincipal().toString(),
+                 authentication.getCredentials().toString(),
+                 getAccessExpireDate()
+         );
      }
 
-     public String generateToken(String username, String role) {
+     public String generateRefreshToken(Authentication authentication) {
+         return generateToken(
+                 authentication.getPrincipal().toString(),
+                 authentication.getCredentials().toString(),
+                 getRefreshExpireDate()
+         );
+     }
+
+     public String generateToken(String username, String role, Date expired) {
          return Jwts.builder()
                  .setSubject(username)
                  .claim("role", role)
-                 .setExpiration(getExpireDate())
+                 .setExpiration(expired)
                  .signWith(SignatureAlgorithm.HS256, secretKey)
                  .compact();
      }
 
-     private Date getExpireDate() {
+     private Date getAccessExpireDate() {
          Date now = new Date();
-         return new Date(now.getTime() + expired);
+         return new Date(now.getTime() + access);
+     }
+
+     private Date getRefreshExpireDate() {
+         Date now = new Date();
+         return new Date(now.getTime() + refresh);
      }
 
      public String resolveToken(String token) {

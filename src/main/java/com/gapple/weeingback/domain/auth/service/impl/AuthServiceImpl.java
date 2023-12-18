@@ -12,13 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -59,8 +57,9 @@ public class AuthServiceImpl implements AuthService {
 
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(id, password, roles);
-            String token = jwtProvider.generateToken(authentication);
-            return ResponseEntity.ok(new AuthLoginResponse(token, "ok"));
+            String access = jwtProvider.generateAccessToken(authentication);
+            String refresh = jwtProvider.generateRefreshToken(authentication);
+            return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
         } else throw new IllegalArgumentException();
     }
 

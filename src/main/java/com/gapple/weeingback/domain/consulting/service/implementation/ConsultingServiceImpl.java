@@ -73,9 +73,13 @@ public class ConsultingServiceImpl implements ConsultingService {
     @Override
     @Transactional
     public ResponseEntity<ConsultingCancleResponse> cancleConsulting(ConsultingCancleRequest request) {
-//        Consulting consulting = consultingRepository.findById(UUID.fromString(request.getConsultingId()));
-//        consultingRepository.delete(consulting);
-        consultingRepository.deleteById(UUID.fromString(request.getConsultingId()));
+        UUID id = UUID.fromString(request.getConsultingId());
+        Consulting consulting = consultingRepository.findById(id);
+
+        if(consulting != null){
+            consultingRepository.deleteById(UUID.fromString(request.getConsultingId()));
+        } else throw new IllegalArgumentException();
+
         return ResponseEntity.ok().body(new ConsultingCancleResponse("ok"));
     }
 }

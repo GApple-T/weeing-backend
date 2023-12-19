@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
-    public String sendMail(String to){
+    public String sendAuth(String to){
         String authNumber = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 

@@ -41,7 +41,9 @@ public class BoardgameServiceImpl implements BoardgameService {
                 .joined(0L)
                 .build();
 
-        boardgameRepository.save(boardgame);
+        if(member.getBoardgame() == null){
+            boardgameRepository.save(boardgame);
+        } else throw new IllegalArgumentException();
 
         return ResponseEntity.ok().body(new BoardgameCreateResponse("ok"));
     }

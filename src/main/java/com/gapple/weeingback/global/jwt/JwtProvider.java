@@ -1,7 +1,7 @@
  package com.gapple.weeingback.global.jwt;
 
  import io.jsonwebtoken.Jwts;
- import io.jsonwebtoken.SignatureAlgorithm;
+ import io.jsonwebtoken.security.Keys;
  import org.springframework.beans.factory.annotation.Value;
  import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
  import org.springframework.security.core.Authentication;
@@ -46,7 +46,8 @@
                  .setSubject(username)
                  .claim("role", role)
                  .setExpiration(expired)
-                 .signWith(SignatureAlgorithm.HS256, secretKey)
+//                 .signWith(SignatureAlgorithm.HS256, secretKey)
+                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                  .compact();
      }
 
@@ -72,16 +73,16 @@
 
      private String getUsername(String accessToken) {
         return Jwts.parserBuilder()
-                 .setSigningKey(secretKey)
-                 .build()
-                 .parseClaimsJws(accessToken)
-                 .getBody()
-                 .getSubject();
+                .setSigningKey(secretKey.getBytes())
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody()
+                .getSubject();
      }
 
      private String getRole(String accessToken) {
         return Jwts.parserBuilder()
-                 .setSigningKey(secretKey)
+                 .setSigningKey(secretKey.getBytes())
                  .build()
                  .parseClaimsJws(accessToken)
                  .getBody()

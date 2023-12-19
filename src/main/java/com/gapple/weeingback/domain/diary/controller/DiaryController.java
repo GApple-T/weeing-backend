@@ -24,4 +24,9 @@ public class DiaryController {
     public ResponseEntity<DiaryListResponse> listDiary(@Valid @RequestBody DiaryListRequest request){
         return diaryService.listDiary(request);
     }
+
+    @GetMapping("/my-list")
+    public ResponseEntity myListDiary(){
+        return diaryService.myListDiary();
+    }
 }

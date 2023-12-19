@@ -95,7 +95,7 @@
          }
 
          try {return Jwts.parserBuilder()
-                     .setSigningKey(secretKey)
+                     .setSigningKey(secretKey.getBytes())
                      .build()
                      .parseClaimsJws(accessToken)
                      .getBody()

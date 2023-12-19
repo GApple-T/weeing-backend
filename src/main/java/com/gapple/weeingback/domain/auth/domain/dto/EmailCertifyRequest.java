@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.auth.dto;
+package com.gapple.weeingback.domain.auth.domain.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

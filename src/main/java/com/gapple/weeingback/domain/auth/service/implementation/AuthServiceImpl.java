@@ -62,6 +62,8 @@ public class AuthServiceImpl implements AuthService {
         UUID id = member.getId();
         String password = member.getPassword();
 
+        Authentication authentication = new UsernamePasswordAuthenticationToken(id, password, roles);
+
         String access = jwtProvider.generateAccessToken(authentication);
         String refresh = jwtProvider.generateRefreshToken(authentication);
 
@@ -74,8 +76,6 @@ public class AuthServiceImpl implements AuthService {
             .build();
 
         refreshTokenRepository.save(refreshToken);
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(id, password, roles);
 
         return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
     }

@@ -1,14 +1,9 @@
 package com.gapple.weeingback.domain.auth.controller;
 
-import com.gapple.weeingback.domain.auth.dto.*;
+import com.gapple.weeingback.domain.auth.domain.dto.*;
 import com.gapple.weeingback.domain.auth.service.AuthService;
-<<<<<<< HEAD
-import jakarta.servlet.http.HttpServletRequest;
-=======
->>>>>>> 956c9c58831b73713b51ee24452822b540a923b6
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +27,11 @@ public class AuthController {
     public ResponseEntity<?> logout(@Valid @RequestHeader(name = "Authorization", required = true) String authorization,
                                     @Valid @RequestHeader(name = "refresh-token", required = true) String refresh){
         return authService.logout(authorization, refresh);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthLogoutResponse> refresh(@Valid @RequestHeader(name = "refresh-token", required = true) String refresh){
+        return authService.refresh(refresh);
     }
 
     @PostMapping("/send-auth")

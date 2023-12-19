@@ -1,16 +1,16 @@
 package com.gapple.weeingback.domain.diary.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
+
 @Table
 @Entity
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Diary {
@@ -26,5 +26,8 @@ public class Diary {
     private String description;
 
     @Column
-    private Long accessRange;
+    private Long studentGrade;
+
+    @Column
+    private Long studentClass;
 }

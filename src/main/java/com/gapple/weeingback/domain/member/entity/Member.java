@@ -49,7 +49,7 @@ public class Member implements GrantedAuthority {
   @JoinColumn(name = "boardgame_id")
   private Boardgame boardgame;
 
-  @OneToMany
+  @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "diary_id")
   private List<Diary> diaries;
 

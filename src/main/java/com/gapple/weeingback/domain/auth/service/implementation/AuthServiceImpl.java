@@ -61,9 +61,6 @@ public class AuthServiceImpl implements AuthService {
       
         UUID id = member.getId();
         String password = member.getPassword();
-
-        String id = member.getId().toString();
-        String password = member.getPassword();
           
         Authentication authentication =
                     new UsernamePasswordAuthenticationToken(id.toString(), password, roles);

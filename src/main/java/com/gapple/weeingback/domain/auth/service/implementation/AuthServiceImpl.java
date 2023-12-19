@@ -98,7 +98,7 @@ public class AuthServiceImpl implements AuthService {
             } else throw new RuntimeException();
 
             return new ResponseEntity<>(HttpStatus.OK);
-        }else throw new RuntimeException();
+        } else throw new RuntimeException();
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
@@ -142,10 +142,10 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.ok(new AuthLogoutResponse(newAccess, newRefresh, "ok"));
         } else throw new RuntimeException();
     }
-}
+
 
     @Override
     public ResponseEntity<String> sendAuth(EmailCertifyRequest request) {
-        return ResponseEntity.ok(emailService.sendAuth(request.getEmail()));
+        return ResponseEntity.ok.body(emailService.sendAuth(request.getEmail()));
     }
 }

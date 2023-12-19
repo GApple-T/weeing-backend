@@ -13,9 +13,9 @@
 
  @Component
  public class JwtProvider {
-     private String secretKey;
-     private Long access;
-     private Long refresh;
+     private final String secretKey;
+     private final Long access;
+     private final Long refresh;
 
      public JwtProvider(@Value("${jwt.secret}") String secretKey,
                         @Value("${jwt.access}") Long access,
@@ -71,16 +71,18 @@
      }
 
      private String getUsername(String accessToken) {
-         return Jwts.parser()
+        return Jwts.parserBuilder()
                  .setSigningKey(secretKey)
+                 .build()
                  .parseClaimsJws(accessToken)
                  .getBody()
                  .getSubject();
      }
 
      private String getRole(String accessToken) {
-         return (String) Jwts.parser()
+        return Jwts.parserBuilder()
                  .setSigningKey(secretKey)
+                 .build()
                  .parseClaimsJws(accessToken)
                  .getBody()
                  .get("role", String.class);
@@ -91,9 +93,9 @@
              return false;
          }
 
-         try {
-             return Jwts.parser()
+         try {return Jwts.parserBuilder()
                      .setSigningKey(secretKey)
+                     .build()
                      .parseClaimsJws(accessToken)
                      .getBody()
                      .getExpiration()

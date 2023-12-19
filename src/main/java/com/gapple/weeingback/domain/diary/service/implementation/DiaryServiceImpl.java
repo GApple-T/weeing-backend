@@ -4,6 +4,7 @@ import com.gapple.weeingback.domain.diary.entity.Diary;
 import com.gapple.weeingback.domain.diary.entity.dto.request.DiaryListRequest;
 import com.gapple.weeingback.domain.diary.entity.dto.request.DiarySubmitRequest;
 import com.gapple.weeingback.domain.diary.entity.dto.response.DiaryListResponse;
+import com.gapple.weeingback.domain.diary.entity.dto.response.DiaryMyListResponse;
 import com.gapple.weeingback.domain.diary.entity.dto.response.DiarySubmitResponse;
 import com.gapple.weeingback.domain.diary.repository.DiaryRepository;
 import com.gapple.weeingback.domain.diary.service.DiaryService;
@@ -61,5 +62,15 @@ public class DiaryServiceImpl implements DiaryService {
         }
 
         return ResponseEntity.ok().body(new DiaryListResponse(diaries ,"ok"));
+    }
+
+    @Override
+    public ResponseEntity<DiaryMyListResponse> myListDiary() {
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Member member = memberRepository.findMemberById(UUID.fromString(id));
+        List<Diary> diaries = member.getDiaries();
+
+        return ResponseEntity.ok().body(new DiaryMyListResponse(diaries, "ok"));
     }
 }

@@ -29,7 +29,7 @@ public class Member implements GrantedAuthority {
   @Column(columnDefinition = "VARCHAR(50)", nullable = false)
   private String email;
 
-  @Column(columnDefinition = "VARCHAR(15)")
+  @Column(columnDefinition = "VARCHAR(20)")
   private String name;
 
   @Column(columnDefinition = "INTEGER")

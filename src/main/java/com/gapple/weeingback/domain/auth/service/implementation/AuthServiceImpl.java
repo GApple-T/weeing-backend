@@ -61,30 +61,18 @@ public class AuthServiceImpl implements AuthService {
       
         UUID id = member.getId();
         String password = member.getPassword();
-          
-        Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(id.toString(), password, roles);
-
-            String access = jwtProvider.generateAccessToken(authentication);
-            String refresh = jwtProvider.generateRefreshToken(authentication);
-
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .key(id)
-                    .value(refresh)
-                    .build();
-
-            refreshTokenRepository.save(refreshToken);
-
-            return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
-        } else throw new IllegalArgumentException();
-
-
 
         List<AccessRole> roles = new ArrayList<>();
         roles.add(AccessRole.valueOf(member.getRole()));
 
-        Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(id, password, roles);
+        RefreshToken refreshToken = RefreshToken.builder()
+            .key(id)
+            .value(refresh)
+            .build();
+
+        refreshTokenRepository.save(refreshToken);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(id, password, roles);
         String access = jwtProvider.generateAccessToken(authentication);
         String refresh = jwtProvider.generateRefreshToken(authentication);
 

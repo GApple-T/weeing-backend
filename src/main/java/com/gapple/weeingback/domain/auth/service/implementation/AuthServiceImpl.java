@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
         } else throw new MemberExistsException();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<AuthLoginResponse> login(AuthLoginRequest request){
         Member member = memberRepository.findMemberByEmail(request.getEmail())
                 .orElseThrow(RuntimeException::new);

@@ -20,7 +20,7 @@ public class RefreshToken {
     @Column
     private UUID key;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(500)")
     private String value;
 
     public RefreshToken(UUID key, String token) {

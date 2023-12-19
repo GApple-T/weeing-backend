@@ -54,24 +54,18 @@ public class AuthServiceImpl implements AuthService {
     @Transactional(readOnly = true)
     public ResponseEntity<AuthLoginResponse> login(AuthLoginRequest request){
         Member member = memberRepository.findMemberByEmail(request.getEmail())
-<<<<<<< HEAD:src/main/java/com/gapple/weeingback/domain/auth/service/impl/AuthServiceImpl.java
                 .orElseThrow(RuntimeException::new);
-
-        if(passwordEncoder.matches(request.getPassword(), member.getPassword())){
-            UUID id = member.getId();
-            String password = member.getPassword();
-=======
-                .orElseThrow(MemberNotFoundException::new);
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword()))
             throw new PasswordNotMatchException();
->>>>>>> 1158d969fe627ac5a496a4d6a69f79de63ef4cc9:src/main/java/com/gapple/weeingback/domain/auth/service/implementation/AuthServiceImpl.java
+      
+        UUID id = member.getId();
+        String password = member.getPassword();
 
         String id = member.getId().toString();
         String password = member.getPassword();
-
-<<<<<<< HEAD:src/main/java/com/gapple/weeingback/domain/auth/service/impl/AuthServiceImpl.java
-            Authentication authentication =
+          
+        Authentication authentication =
                     new UsernamePasswordAuthenticationToken(id.toString(), password, roles);
 
             String access = jwtProvider.generateAccessToken(authentication);
@@ -86,7 +80,9 @@ public class AuthServiceImpl implements AuthService {
 
             return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
         } else throw new IllegalArgumentException();
-=======
+
+
+
         List<AccessRole> roles = new ArrayList<>();
         roles.add(AccessRole.valueOf(member.getRole()));
 
@@ -96,7 +92,6 @@ public class AuthServiceImpl implements AuthService {
         String refresh = jwtProvider.generateRefreshToken(authentication);
 
         return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
->>>>>>> 1158d969fe627ac5a496a4d6a69f79de63ef4cc9:src/main/java/com/gapple/weeingback/domain/auth/service/implementation/AuthServiceImpl.java
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
@@ -162,7 +157,7 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.ok(new AuthLogoutResponse(newAccess, newRefresh, "ok"));
         } else throw new RuntimeException();
     }
-
+}
 
     @Override
     public ResponseEntity<String> sendAuth(EmailCertifyRequest request) {

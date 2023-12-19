@@ -1,7 +1,7 @@
  package com.gapple.weeingback.global.jwt;
 
  import io.jsonwebtoken.Jwts;
- import io.jsonwebtoken.SignatureAlgorithm;
+ import io.jsonwebtoken.security.Keys;
  import org.springframework.beans.factory.annotation.Value;
  import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
  import org.springframework.security.core.Authentication;
@@ -13,9 +13,9 @@
 
  @Component
  public class JwtProvider {
-     private String secretKey;
-     private Long access;
-     private Long refresh;
+     private final String secretKey;
+     private final Long access;
+     private final Long refresh;
 
      public JwtProvider(@Value("${jwt.secret}") String secretKey,
                         @Value("${jwt.access}") Long access,
@@ -46,7 +46,8 @@
                  .setSubject(username)
                  .claim("role", role)
                  .setExpiration(expired)
-                 .signWith(SignatureAlgorithm.HS256, secretKey)
+//                 .signWith(SignatureAlgorithm.HS256, secretKey)
+                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                  .compact();
      }
 
@@ -71,16 +72,18 @@
      }
 
      private String getUsername(String accessToken) {
-         return Jwts.parser()
-                 .setSigningKey(secretKey)
-                 .parseClaimsJws(accessToken)
-                 .getBody()
-                 .getSubject();
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey.getBytes())
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody()
+                .getSubject();
      }
 
      private String getRole(String accessToken) {
-         return (String) Jwts.parser()
-                 .setSigningKey(secretKey)
+        return Jwts.parserBuilder()
+                 .setSigningKey(secretKey.getBytes())
+                 .build()
                  .parseClaimsJws(accessToken)
                  .getBody()
                  .get("role", String.class);
@@ -91,9 +94,9 @@
              return false;
          }
 
-         try {
-             return Jwts.parser()
-                     .setSigningKey(secretKey)
+         try {return Jwts.parserBuilder()
+                     .setSigningKey(secretKey.getBytes())
+                     .build()
                      .parseClaimsJws(accessToken)
                      .getBody()
                      .getExpiration()

@@ -27,7 +27,7 @@ public class ConsultingController {
         return consultingService.showConsulting();
     }
 
-    @GetMapping("/cancle")
+    @DeleteMapping("/cancle")
     public ResponseEntity<ConsultingCancleResponse> cancleConsulting(@Valid @RequestBody ConsultingCancleRequest request){
         return consultingService.cancleConsulting(request);
     }

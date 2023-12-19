@@ -10,4 +10,6 @@ public interface BoardgameService {
     ResponseEntity<BoardgameCreateResponse> createBoardgame(Long maxOf);
 
     ResponseEntity<BoardgameShowResponse> showAllBoardgame();
+
+    ResponseEntity doneBoardgame(String id);
 }

@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ToBoardgameDto {
+    private String id;
     private Long maxOf;
     private Long joined;
     private String creator;

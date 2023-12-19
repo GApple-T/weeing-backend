@@ -9,4 +9,6 @@ import java.util.UUID;
 @Repository
 public interface BoardgameRepository extends JpaRepository<Boardgame, Long> {
     boolean existsById(UUID id);
+
+    Boardgame findBoardgameById(UUID id);
 }

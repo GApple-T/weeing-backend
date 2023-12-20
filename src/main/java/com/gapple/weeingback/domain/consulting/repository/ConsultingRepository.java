@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ConsultingRepository extends JpaRepository<Consulting, Long> {
-
+    boolean existsByClassTime(Long id);
     void deleteById(UUID id);
-
     Consulting findById(UUID id);
 }

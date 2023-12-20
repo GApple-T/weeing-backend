@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardgameCreateRequest {
-    private Long maxOf;
+public class BoardgameJoinRequest {
+    private String id;
 }

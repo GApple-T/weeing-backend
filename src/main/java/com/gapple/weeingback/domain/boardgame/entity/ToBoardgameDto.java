@@ -1,6 +1,7 @@
 package com.gapple.weeingback.domain.boardgame.entity;
 
 import com.gapple.weeingback.domain.member.entity.Member;
+import com.gapple.weeingback.domain.member.entity.NumberNameWithId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,6 @@ public class ToBoardgameDto {
     private String id;
     private Long maxOf;
     private Long joined;
-    private String creator;
-    private List<Member> players;
+    private NumberNameWithId creator;
+    private List<NumberNameWithId> players;
 }

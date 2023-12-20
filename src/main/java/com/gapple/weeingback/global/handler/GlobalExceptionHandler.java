@@ -1,8 +1,6 @@
 package com.gapple.weeingback.global.handler;
 
-import com.gapple.weeingback.global.exception.MemberExistsException;
-import com.gapple.weeingback.global.exception.MemberNotFoundException;
-import com.gapple.weeingback.global.exception.PasswordNotMatchException;
+import com.gapple.weeingback.global.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +20,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MemberExistsException.class)
     public ResponseEntity<HttpStatus> handleMethodMemberExistsException(){
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BoardgameExistsException.class)
+    public ResponseEntity<HttpStatus> handleMethodBoardgameExistsException(){
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SameCreatorException.class)
+    public ResponseEntity<HttpStatus> handleMethodSameCreatorException(){
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SameConsultingException.class)
+    public ResponseEntity<HttpStatus> handleMethodSameConsultingException(){
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

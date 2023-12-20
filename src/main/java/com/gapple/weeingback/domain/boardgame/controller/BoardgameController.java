@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 public class BoardgameController {
     private final BoardgameService boardgameService;
 
-    @PostMapping("/create")
-    public ResponseEntity<BoardgameCreateResponse> createBoardgame(@Valid @RequestBody BoardgameCreateRequest boardgameCreateRequest){
-        return boardgameService.createBoardgame(boardgameCreateRequest.getMaxOf());
+    @PostMapping("/submit")
+    public ResponseEntity<BoardgameCreateResponse> submitBoardgame(@Valid @RequestBody BoardgameCreateRequest boardgameCreateRequest){
+        return boardgameService.submitBoardgame(boardgameCreateRequest.getMaxOf());
     }
 
     @GetMapping("/show-all")

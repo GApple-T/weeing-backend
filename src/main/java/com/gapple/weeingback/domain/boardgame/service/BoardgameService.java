@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.function.LongFunction;
 
 public interface BoardgameService {
-    ResponseEntity<BoardgameCreateResponse> createBoardgame(Long maxOf);
+    ResponseEntity<BoardgameCreateResponse> submitBoardgame(Long maxOf);
 
     ResponseEntity<BoardgameShowResponse> showAllBoardgame();
 

@@ -9,6 +9,7 @@ import com.gapple.weeingback.domain.boardgame.repository.BoardgameRepository;
 import com.gapple.weeingback.domain.boardgame.service.BoardgameService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
+import com.gapple.weeingback.global.exception.BoardgameExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,11 +30,13 @@ public class BoardgameServiceImpl implements BoardgameService {
 
     @Override
     @Transactional
-    public ResponseEntity<BoardgameCreateResponse> createBoardgame(Long maxOf) {
+    public ResponseEntity<BoardgameCreateResponse> submitBoardgame(Long maxOf) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberById(UUID.fromString(id));
 
-        log.info(member.getEmail());
+        if(member.getBoardgame() != null){
+            throw new BoardgameExistsException();
+        }
 
         Boardgame boardgame = Boardgame.builder()
                 .creator(member.getId())
@@ -41,9 +44,10 @@ public class BoardgameServiceImpl implements BoardgameService {
                 .joined(0L)
                 .build();
 
-        if(member.getBoardgame() == null){
-            boardgameRepository.save(boardgame);
-        } else throw new IllegalArgumentException();
+        member.setBoardgame(boardgame);
+
+        memberRepository.save(member);
+        boardgameRepository.save(boardgame);
 
         return ResponseEntity.ok().body(new BoardgameCreateResponse("ok"));
     }

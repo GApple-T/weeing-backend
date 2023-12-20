@@ -4,6 +4,7 @@ import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameCreat
 import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameShowResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.UUID;
 import java.util.function.LongFunction;
 
 public interface BoardgameService {
@@ -11,5 +12,7 @@ public interface BoardgameService {
 
     ResponseEntity<BoardgameShowResponse> showAllBoardgame();
 
-    ResponseEntity doneBoardgame(String id);
+    ResponseEntity doneBoardgame(UUID id);
+
+    ResponseEntity joinBoardgame(UUID id);
 }

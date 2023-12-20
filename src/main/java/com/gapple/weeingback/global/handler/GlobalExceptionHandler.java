@@ -32,4 +32,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<HttpStatus> handleMethodSameCreatorException(){
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(SameConsultingException.class)
+    public ResponseEntity<HttpStatus> handleMethodSameConsultingException(){
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 }

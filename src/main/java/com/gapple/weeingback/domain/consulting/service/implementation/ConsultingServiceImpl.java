@@ -11,6 +11,7 @@ import com.gapple.weeingback.domain.consulting.repository.ConsultingRepository;
 import com.gapple.weeingback.domain.consulting.service.ConsultingService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
+import com.gapple.weeingback.global.exception.SameConsultingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +35,16 @@ public class ConsultingServiceImpl implements ConsultingService {
     @Transactional
     public ResponseEntity<ConsultingSubmitResponse> submitConsulting(ConsultingSubmitRequest request){
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-
         Member member = memberRepository.findMemberById(UUID.fromString(id));
-
-            // 해당 시간이 니가 이미 보낸 신청이 있으면 거절할건데 로직
 
         Consulting consulting = Consulting.toConsulting(
                 Instant.now().toEpochMilli(),
                 request.getClassTime(),
                 request.getDescription());
+
+        if(consultingRepository.existsByClassTime(consulting.getClassTime())){
+            throw new SameConsultingException();
+        }
 
         member.addConsulting(consulting);
 

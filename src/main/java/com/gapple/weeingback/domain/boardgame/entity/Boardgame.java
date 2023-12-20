@@ -1,11 +1,11 @@
 package com.gapple.weeingback.domain.boardgame.entity;
 
 import com.gapple.weeingback.domain.member.entity.Member;
+import com.gapple.weeingback.domain.member.entity.NumberNameWithId;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,8 +22,8 @@ public class Boardgame {
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     private UUID id;
 
-    @Column(nullable = false)
-    private UUID creator;
+    @OneToOne
+    private Member creator;
 
     @Column(nullable = false)
     private Long maxOf;
@@ -36,11 +36,26 @@ public class Boardgame {
     private List<Member> members;
 
     public ToBoardgameDto toDto(Boardgame boardgame){
+        List<NumberNameWithId> players = new ArrayList<>();
+        boardgame.getMembers().forEach(member -> {
+            players.add(new NumberNameWithId(
+                    member.getNumber() + " " + member.getName(),
+                    member.getId().toString()
+            ));
+        });
+
         return new ToBoardgameDto(
                 boardgame.getId().toString(),
                 boardgame.getMaxOf(),
                 boardgame.getJoined(),
-                boardgame.getCreator().toString(),
-                boardgame.getMembers());
+                new NumberNameWithId(
+                        creator.getNumber() + " " + creator.getName(),
+                        creator.getId().toString()
+                ),
+                players);
+    }
+
+    public void addMember(Member member){
+        members.add(member);
     }
 }

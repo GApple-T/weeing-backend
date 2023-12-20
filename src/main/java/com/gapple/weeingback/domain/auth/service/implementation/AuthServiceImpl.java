@@ -9,7 +9,6 @@ import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.email.service.EmailService;
 import com.gapple.weeingback.global.exception.MemberExistsException;
-import com.gapple.weeingback.global.exception.MemberNotFoundException;
 import com.gapple.weeingback.global.exception.PasswordNotMatchException;
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,9 +67,13 @@ public class AuthServiceImpl implements AuthService {
         roles.add(AccessRole.valueOf(member.getRole()));
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(id, password, roles);
-
         String access = jwtProvider.generateAccessToken(authentication);
         String refresh = jwtProvider.generateRefreshToken(authentication);
+
+        if(refreshTokenRepository.existsByKey(id)){
+            RefreshToken savedToken = refreshTokenRepository.findRefreshTokenByKey(id);
+            refreshTokenRepository.delete(savedToken);
+        }
 
         RefreshToken refreshToken = RefreshToken.builder()
             .key(id)
@@ -87,60 +92,91 @@ public class AuthServiceImpl implements AuthService {
         }
         String refresh = jwtProvider.resolveToken(headerRefresh);
 
-        if(jwtProvider.validateToken(refresh)){
             Authentication refreshToken = jwtProvider.getAuthentication(refresh);
             UUID refreshKey = UUID.fromString(refreshToken.getName());
 
             RefreshToken savedRefreshToken = refreshTokenRepository.findRefreshTokenByKey(refreshKey);
+            String savedRefresh = savedRefreshToken.getValue();
 
-            if(jwtProvider.validateToken(savedRefreshToken.getValue()) &&
-                    refresh.equals(savedRefreshToken.getValue())){
+            if(refresh.equals(savedRefresh)){
                 refreshTokenRepository.delete(savedRefreshToken);
             } else throw new RuntimeException();
 
             return new ResponseEntity<>(HttpStatus.OK);
-        } else throw new RuntimeException();
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
-    public ResponseEntity<AuthLogoutResponse> refresh(String headerRefresh){
+    public ResponseEntity<AuthLogoutResponse> refresh(String headerAuthorization, String headerRefresh){
         if(headerRefresh == null){
             throw new RuntimeException();
         }
         String refresh = jwtProvider.resolveToken(headerRefresh);
-        Authentication refreshToken = jwtProvider.getAuthentication(refresh);
-        UUID refreshId = UUID.fromString(refreshToken.getName());
+        String authorization = jwtProvider.resolveToken(headerAuthorization);
+        log.info("Access={}, Refresh={}", authorization, refresh);
+        log.info(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
+
+        boolean accessValidate = jwtProvider.validateToken(authorization);
+        boolean refreshValidate = jwtProvider.validateToken(refresh);
+
+        UUID savedId;
+        if(refreshValidate){
+                Authentication refreshToken = jwtProvider.getAuthentication(refresh);
+                log.info("Authorities={}", refreshToken.getAuthorities());
+                savedId = UUID.fromString(refreshToken.getName());
+        } else savedId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        log.info("savedId={}", savedId);
 
         RefreshToken savedToken =
-                refreshTokenRepository.findRefreshTokenByKey(refreshId);
-        String savedTokenValue =
-                refreshTokenRepository.findRefreshTokenByKey(refreshId).getValue();
+                refreshTokenRepository.findRefreshTokenByKey(savedId);
 
-        if(jwtProvider.validateToken(savedTokenValue) && refresh.equals(savedTokenValue)){
-            refreshTokenRepository.delete(savedToken);
+        log.info("savedToken={}", savedToken.getValue());
 
-            Member member = memberRepository.findMemberById(refreshId);
+        if(refresh.equals(savedToken.getValue())){
+            if(!accessValidate && !refreshValidate){
+                throw new RuntimeException();
+            } else if(!accessValidate){
+                Member member = memberRepository.findMemberById(savedId);
 
-            UUID id = member.getId();
-            String password = member.getPassword();
+                log.info(member.getId().toString());
 
-            List<AccessRole> roles = new ArrayList<>();
-            roles.add(AccessRole.valueOf(member.getRole()));
+                String password = member.getPassword();
 
-            Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(id.toString(), password, roles);
+                List<AccessRole> roles = new ArrayList<>();
+                roles.add(AccessRole.valueOf(member.getRole()));
 
-            String newAccess = jwtProvider.generateAccessToken(authentication);
-            String newRefresh = jwtProvider.generateRefreshToken(authentication);
+                log.info(roles.toString());
 
-            RefreshToken saveRefreshToken = RefreshToken.builder().
-                    key(id)
-                    .value(newRefresh)
-                    .build();
+                Authentication authentication =
+                        new UsernamePasswordAuthenticationToken(savedId.toString(), password, roles);
 
-            refreshTokenRepository.save(saveRefreshToken);
+                log.info(authentication.getAuthorities().toString());
 
-            return ResponseEntity.ok(new AuthLogoutResponse(newAccess, newRefresh, "ok"));
+                String newAccessToken = jwtProvider.generateAccessToken(authentication);
+
+                return ResponseEntity.ok(new AuthLogoutResponse(newAccessToken, null, "ok"));
+            } else if(!refreshValidate){
+                log.info("authorization={}", authorization);
+                Authentication authorizationToken = jwtProvider.getAuthentication(authorization); // 오류 발생지
+                log.info("authorizationToken={}", authorizationToken);
+                UUID id = UUID.fromString(authorizationToken.getName());
+                log.info("id={}", id);
+                String newRefresh = jwtProvider.generateRefreshToken(authorizationToken);
+                log.info("newRefresh={}",newRefresh);
+
+                RefreshToken newRefreshToken = RefreshToken.builder()
+                        .key(id)
+                        .value(newRefresh)
+                        .build();
+                log.info("newRefreshToken={}", newRefreshToken);
+
+                refreshTokenRepository.delete(savedToken);
+                refreshTokenRepository.save(newRefreshToken);
+
+                return ResponseEntity.ok(new AuthLogoutResponse(null, newRefresh, "ok"));
+            } else {
+                log.info("ok");
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         } else throw new RuntimeException();
     }
 

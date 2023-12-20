@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -16,6 +18,10 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+  data:
+    redis:
+      port: 6379
+      host: localhost
 
   jpa:
     open-in-view: false

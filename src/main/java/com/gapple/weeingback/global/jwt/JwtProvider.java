@@ -1,17 +1,21 @@
  package com.gapple.weeingback.global.jwt;
 
+ import io.jsonwebtoken.Claims;
  import io.jsonwebtoken.Jwts;
  import io.jsonwebtoken.security.Keys;
+ import lombok.extern.slf4j.Slf4j;
  import org.springframework.beans.factory.annotation.Value;
  import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
  import org.springframework.security.core.Authentication;
+ import org.springframework.security.core.GrantedAuthority;
+ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  import org.springframework.stereotype.Component;
 
- import java.util.Date;
-
- import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
+ import java.util.*;
+import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
  @Component
+ @Slf4j
  public class JwtProvider {
      private final String secretKey;
      private final Long access;
@@ -28,37 +32,28 @@
      public String generateAccessToken(Authentication authentication) {
          return generateToken(
                  authentication.getPrincipal().toString(),
-                 authentication.getCredentials().toString(),
-                 getAccessExpireDate()
+                 authentication.getAuthorities().toString(),
+                 access
          );
      }
 
      public String generateRefreshToken(Authentication authentication) {
          return generateToken(
                  authentication.getPrincipal().toString(),
-                 authentication.getCredentials().toString(),
-                 getRefreshExpireDate()
+                 authentication.getAuthorities().toString(),
+                 refresh
          );
      }
 
-     public String generateToken(String username, String role, Date expired) {
+     public String generateToken(String username, String role, Long expired) {
+         Long now = new Date().getTime();
+
          return Jwts.builder()
                  .setSubject(username)
                  .claim("role", role)
-                 .setExpiration(expired)
-//                 .signWith(SignatureAlgorithm.HS256, secretKey)
+                 .setExpiration(new Date(now + expired))
                  .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                  .compact();
-     }
-
-     private Date getAccessExpireDate() {
-         Date now = new Date();
-         return new Date(now.getTime() + access);
-     }
-
-     private Date getRefreshExpireDate() {
-         Date now = new Date();
-         return new Date(now.getTime() + refresh);
      }
 
      public String resolveToken(String token) {
@@ -68,36 +63,40 @@
      }
 
      public Authentication getAuthentication(String accessToken) {
+         log.info("createAuthorityList={}", getRole(accessToken));
          return new UsernamePasswordAuthenticationToken(getUsername(accessToken), "", createAuthorityList(getRole(accessToken)));
      }
 
-     private String getUsername(String accessToken) {
+     private String getUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey.getBytes())
                 .build()
-                .parseClaimsJws(accessToken)
+                .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
      }
 
-     private String getRole(String accessToken) {
-        return Jwts.parserBuilder()
-                 .setSigningKey(secretKey.getBytes())
-                 .build()
-                 .parseClaimsJws(accessToken)
-                 .getBody()
-                 .get("role", String.class);
+     private String getRole(String token) {
+        String role = Jwts.parserBuilder()
+                .setSigningKey(secretKey.getBytes())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
+
+        return role;
      }
 
-     public boolean validateToken(String accessToken) {
-         if (accessToken == null) {
+     public boolean validateToken(String token) {
+         if (token == null) {
              return false;
          }
 
-         try {return Jwts.parserBuilder()
+         try {
+             return Jwts.parserBuilder()
                      .setSigningKey(secretKey.getBytes())
                      .build()
-                     .parseClaimsJws(accessToken)
+                     .parseClaimsJws(token)
                      .getBody()
                      .getExpiration()
                      .after(new Date());

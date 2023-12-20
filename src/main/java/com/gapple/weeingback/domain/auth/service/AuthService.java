@@ -7,6 +7,6 @@ public interface AuthService {
     ResponseEntity<AuthJoinResponse> join(AuthJoinRequest request);
     ResponseEntity login(AuthLoginRequest request);
     ResponseEntity logout(String headerAuthorization, String headerRefresh);
-    ResponseEntity<AuthLogoutResponse> refresh(String headerRefresh);
+    ResponseEntity<AuthLogoutResponse> refresh(String headerAuthorization, String headerRefresh);
     ResponseEntity sendAuth(EmailCertifyRequest request);
 }

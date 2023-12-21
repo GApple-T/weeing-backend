@@ -52,4 +52,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<HttpStatus> handleMethodTokenValidateException(){
         return new ResponseEntity<>(HttpStatus.SEE_OTHER);
     }
+
+    @ExceptionHandler(MailSendingException.class)
+    public ResponseEntity<HttpStatus> handleMethodMailSendingException(){
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

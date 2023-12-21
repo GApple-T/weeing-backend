@@ -10,14 +10,12 @@ import com.gapple.weeingback.global.exception.MemberExistsException;
 import com.gapple.weeingback.global.exception.PasswordNotMatchException;
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuthServiceImpl implements AuthService {
     private final EmailService emailService;
     private final MemberRepository memberRepository;
@@ -93,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
         if(refresh.equals(savedRefresh)){
             stringValueOperations.set(refreshKey.toString(), "");
         } else throw new RuntimeException();
-            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
@@ -129,8 +126,6 @@ public class AuthServiceImpl implements AuthService {
 
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(savedId.toString(), password, roles);
-
-                log.info(authentication.getAuthorities().toString());
 
                 String newAccessToken = jwtProvider.generateAccessToken(authentication);
 

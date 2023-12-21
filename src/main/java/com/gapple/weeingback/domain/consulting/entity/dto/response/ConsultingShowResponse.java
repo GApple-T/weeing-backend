@@ -1,6 +1,5 @@
 package com.gapple.weeingback.domain.consulting.entity.dto.response;
 
-import com.gapple.weeingback.domain.consulting.entity.Consulting;
 import com.gapple.weeingback.domain.consulting.entity.ToConsultingResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

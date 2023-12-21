@@ -1,6 +1,5 @@
 package com.gapple.weeingback.domain.boardgame.entity;
 
-import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.entity.NumberNameWithId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

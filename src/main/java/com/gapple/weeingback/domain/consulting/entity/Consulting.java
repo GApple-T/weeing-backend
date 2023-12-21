@@ -1,6 +1,5 @@
 package com.gapple.weeingback.domain.consulting.entity;
 
-import com.gapple.weeingback.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;

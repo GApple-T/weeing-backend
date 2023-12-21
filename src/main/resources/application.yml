@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -16,12 +18,21 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
+      jedis:
+        pool:
+          max-idle: 8
+          min-idle: 0
+          max-wait: 1
 
   jpa:
     open-in-view: false
     hibernate:
       dialect: org.hibernate.dialect.PostgreSQLDialect
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:format_sql: true
     show-sql: true
@@ -34,3 +45,6 @@ jwt:
   secret: ${JWT_SECRET}
   access: 1800000
   refresh: 259200000
+
+server:
+  port: 1234

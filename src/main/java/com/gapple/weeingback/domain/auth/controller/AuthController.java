@@ -27,15 +27,15 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(
-            @Valid @RequestHeader(name = "Authorization", required = true) String authorization,
-            @Valid @RequestHeader(name = "refresh-token", required = true) String refresh){
+            @Valid @RequestHeader(name = "Authorization") String authorization,
+            @Valid @RequestHeader(name = "refresh-token") String refresh){
         return authService.logout(authorization, refresh);
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthLogoutResponse> refresh(
-            @Valid @RequestHeader(name = "Authorization", required = true) String authorization,
-            @Valid @RequestHeader(name = "refresh-token", required = true) String refresh){
+            @Valid @RequestHeader(name = "Authorization") String authorization,
+            @Valid @RequestHeader(name = "refresh-token") String refresh){
         log.info("headerAccess={}, headerRefresh={}", authorization, refresh);
         return authService.refresh(authorization, refresh);
     }

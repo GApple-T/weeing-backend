@@ -82,10 +82,9 @@ import static org.springframework.security.core.authority.AuthorityUtils.createA
      }
 
      public boolean validateToken(String token) {
-         if (token.isEmpty()) {
+         if (token == null) {
              return false;
          }
-
          try {
              return Jwts.parserBuilder()
                      .setSigningKey(secretKey.getBytes())

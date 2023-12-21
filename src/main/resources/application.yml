@@ -33,7 +33,7 @@ spring:
     open-in-view: false
     hibernate:
       dialect: org.hibernate.dialect.PostgreSQLDialect
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:format_sql: true
     show-sql: true

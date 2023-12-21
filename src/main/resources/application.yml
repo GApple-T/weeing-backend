@@ -45,3 +45,6 @@ jwt:
   secret: ${JWT_SECRET}
   access: 1800000
   refresh: 259200000
+
+server:
+  port: 1234

@@ -69,18 +69,9 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(id, password, roles);
         String access = jwtProvider.generateAccessToken(authentication);
         String refresh = jwtProvider.generateRefreshToken(authentication);
-        
-      if(refreshTokenRepository.existsByKey(id)){
-            RefreshToken savedToken = refreshTokenRepository.findRefreshTokenByKey(id);
-            refreshTokenRepository.delete(savedToken);
-        }
 
-        RefreshToken refreshToken = RefreshToken.builder()
-            .key(id)
-            .value(refresh)
-            .build();
-
-        refreshTokenRepository.save(refreshToken);
+        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
+        stringValueOperations.set(id, refresh);
 
         return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
     }
@@ -94,16 +85,14 @@ public class AuthServiceImpl implements AuthService {
         String refresh = jwtProvider.resolveToken(headerRefresh);
 
             Authentication refreshToken = jwtProvider.getAuthentication(refresh);
-            UUID refreshKey = UUID.fromString(refreshToken.getName());
+            String refreshKey = refreshToken.getName();
 
+        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
+        String savedRefresh = stringValueOperations.get(refreshKey);
 
-            RefreshToken savedRefreshToken = refreshTokenRepository.findRefreshTokenByKey(refreshKey);
-            String savedRefresh = savedRefreshToken.getValue();
-
-            if(refresh.equals(savedRefresh)){
-                refreshTokenRepository.delete(savedRefreshToken);
-            } else throw new RuntimeException();
-
+        if(refresh.equals(savedRefresh)){
+            stringValueOperations.set(refreshKey.toString(), "");
+        } else throw new RuntimeException();
             return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -128,12 +117,12 @@ public class AuthServiceImpl implements AuthService {
         } else savedId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
         log.info("savedId={}", savedId);
 
-        RefreshToken savedToken =
-                refreshTokenRepository.findRefreshTokenByKey(savedId);
+        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
+        String token = stringValueOperations.get(savedId.toString());
 
-        log.info("savedToken={}", savedToken.getValue());
+        log.info("savedToken={}", token);
 
-        if(refresh.equals(savedToken.getValue())){
+        if(refresh.equals(token)){
             if(!accessValidate && !refreshValidate){
                 throw new RuntimeException();
             } else if(!accessValidate){
@@ -165,14 +154,7 @@ public class AuthServiceImpl implements AuthService {
                 String newRefresh = jwtProvider.generateRefreshToken(authorizationToken);
                 log.info("newRefresh={}",newRefresh);
 
-                RefreshToken newRefreshToken = RefreshToken.builder()
-                        .key(id)
-                        .value(newRefresh)
-                        .build();
-                log.info("newRefreshToken={}", newRefreshToken);
-
-                refreshTokenRepository.delete(savedToken);
-                refreshTokenRepository.save(newRefreshToken);
+                stringValueOperations.set(id.toString(), newRefresh);
 
                 return ResponseEntity.ok(new AuthLogoutResponse(null, newRefresh, "ok"));
             } else {

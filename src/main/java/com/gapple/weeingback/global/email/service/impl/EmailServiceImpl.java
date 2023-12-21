@@ -1,6 +1,7 @@
 package com.gapple.weeingback.global.email.service.impl;
 
 import com.gapple.weeingback.global.email.service.EmailService;
+import com.gapple.weeingback.global.exception.MailSendingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
 
             return authNumber;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MailSendingException();
         }
     }
 

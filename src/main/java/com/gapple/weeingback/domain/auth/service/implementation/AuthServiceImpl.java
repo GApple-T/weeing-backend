@@ -1,19 +1,18 @@
 package com.gapple.weeingback.domain.auth.service.implementation;
 
-import com.gapple.weeingback.domain.auth.domain.RefreshToken;
 import com.gapple.weeingback.domain.auth.domain.dto.*;
-import com.gapple.weeingback.domain.auth.repository.RefreshTokenRepository;
 import com.gapple.weeingback.domain.auth.service.AuthService;
 import com.gapple.weeingback.domain.member.entity.AccessRole;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.email.service.EmailService;
 import com.gapple.weeingback.global.exception.MemberExistsException;
-import com.gapple.weeingback.global.exception.MemberNotFoundException;
 import com.gapple.weeingback.global.exception.PasswordNotMatchException;
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Transactional(rollbackFor = RuntimeException.class)
     public ResponseEntity<AuthJoinResponse> join(AuthJoinRequest req){
@@ -59,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword()))
             throw new PasswordNotMatchException();
       
-        UUID id = member.getId();
+        String id = member.getId().toString();
         String password = member.getPassword();
 
         List<AccessRole> roles = new ArrayList<>();
@@ -70,18 +69,15 @@ public class AuthServiceImpl implements AuthService {
         String access = jwtProvider.generateAccessToken(authentication);
         String refresh = jwtProvider.generateRefreshToken(authentication);
 
-        RefreshToken refreshToken = RefreshToken.builder()
-            .key(id)
-            .value(refresh)
-            .build();
-
-        refreshTokenRepository.save(refreshToken);
+        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
+        stringValueOperations.set(id, refresh);
 
         return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
     public ResponseEntity<?> logout(String headerAuthorization, String headerRefresh) {
+
         if(headerRefresh == null){
             throw new RuntimeException();
         }
@@ -91,11 +87,15 @@ public class AuthServiceImpl implements AuthService {
             Authentication refreshToken = jwtProvider.getAuthentication(refresh);
             UUID refreshKey = UUID.fromString(refreshToken.getName());
 
-            RefreshToken savedRefreshToken = refreshTokenRepository.findRefreshTokenByKey(refreshKey);
+            ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
+            String tokenValue = stringValueOperations.get(refreshKey.toString());
+//            RefreshToken savedRefreshToken = refreshTokenRepository.findRefreshTokenByKey(refreshKey);
 
-            if(jwtProvider.validateToken(savedRefreshToken.getValue()) &&
-                    refresh.equals(savedRefreshToken.getValue())){
-                refreshTokenRepository.delete(savedRefreshToken);
+
+            if(jwtProvider.validateToken(tokenValue) &&
+                    refresh.equals(tokenValue)){
+//                refreshTokenRepository.delete(savedRefreshToken);
+                stringValueOperations.decrement(refreshKey.toString());
             } else throw new RuntimeException();
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -103,45 +103,39 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
-    public ResponseEntity<AuthLogoutResponse> refresh(String headerRefresh){
-        if(headerRefresh == null){
+    public ResponseEntity<AuthLogoutResponse> refresh(String refresh){
+        if(refresh == null){
             throw new RuntimeException();
         }
-        String refresh = jwtProvider.resolveToken(headerRefresh);
-        Authentication refreshToken = jwtProvider.getAuthentication(refresh);
-        UUID refreshId = UUID.fromString(refreshToken.getName());
 
-        RefreshToken savedToken =
-                refreshTokenRepository.findRefreshTokenByKey(refreshId);
-        String savedTokenValue =
-                refreshTokenRepository.findRefreshTokenByKey(refreshId).getValue();
+        refresh = jwtProvider.resolveToken(refresh);
 
-        if(jwtProvider.validateToken(savedTokenValue) && refresh.equals(savedTokenValue)){
-            refreshTokenRepository.delete(savedToken);
+        Authentication token = jwtProvider.getAuthentication(refresh);
+        String key = token.getName();
 
-            Member member = memberRepository.findMemberById(refreshId);
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        String value = operations.get(key);
 
-            UUID id = member.getId();
-            String password = member.getPassword();
+        if(!jwtProvider.validateToken(value) && !refresh.equals(value)) {
+            throw new RuntimeException();
+        }
 
-            List<AccessRole> roles = new ArrayList<>();
-            roles.add(AccessRole.valueOf(member.getRole()));
+        Member member = memberRepository.findMemberById(UUID.fromString(key));
 
-            Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(id.toString(), password, roles);
+        String id = member.getId().toString();
+        String password = member.getPassword();
 
-            String newAccess = jwtProvider.generateAccessToken(authentication);
-            String newRefresh = jwtProvider.generateRefreshToken(authentication);
+        List<AccessRole> roles = new ArrayList<>();
+        roles.add(AccessRole.valueOf(member.getRole()));
 
-            RefreshToken saveRefreshToken = RefreshToken.builder().
-                    key(id)
-                    .value(newRefresh)
-                    .build();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(id, password, roles);
 
-            refreshTokenRepository.save(saveRefreshToken);
+        String newAccess = jwtProvider.generateAccessToken(authentication);
+        String newRefresh = jwtProvider.generateRefreshToken(authentication);
 
-            return ResponseEntity.ok(new AuthLogoutResponse(newAccess, newRefresh, "ok"));
-        } else throw new RuntimeException();
+        operations.set(id, newRefresh);
+
+        return ResponseEntity.ok(new AuthLogoutResponse(newAccess, newRefresh, "ok"));
     }
 
 

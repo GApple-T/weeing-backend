@@ -144,7 +144,7 @@ public class AuthServiceImpl implements AuthService {
 
                 return ResponseEntity.ok(new AuthLogoutResponse(null, newRefresh, "ok"));
             } else {
-                return new ResponseEntity<>(HttpStatus.OK);
+                return ResponseEntity.ok().body(new AuthLogoutResponse(null, null, "ok"));
             }
         } else throw new RuntimeException();
     }

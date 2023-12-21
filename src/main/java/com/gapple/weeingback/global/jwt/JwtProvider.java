@@ -63,7 +63,6 @@ import static org.springframework.security.core.authority.AuthorityUtils.createA
      }
 
      public Authentication getAuthentication(String accessToken) {
-         log.info("createAuthorityList={}", getRole(accessToken));
          return new UsernamePasswordAuthenticationToken(getUsername(accessToken), "", createAuthorityList(getRole(accessToken)));
      }
 

@@ -103,8 +103,6 @@ public class AuthServiceImpl implements AuthService {
         }
         String refresh = jwtProvider.resolveToken(headerRefresh);
         String authorization = jwtProvider.resolveToken(headerAuthorization);
-        log.info("Access={}, Refresh={}", authorization, refresh);
-        log.info(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
 
         boolean accessValidate = jwtProvider.validateToken(authorization);
         boolean refreshValidate = jwtProvider.validateToken(refresh);
@@ -112,15 +110,11 @@ public class AuthServiceImpl implements AuthService {
         UUID savedId;
         if(refreshValidate){
                 Authentication refreshToken = jwtProvider.getAuthentication(refresh);
-                log.info("Authorities={}", refreshToken.getAuthorities());
                 savedId = UUID.fromString(refreshToken.getName());
         } else savedId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
-        log.info("savedId={}", savedId);
 
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         String token = stringValueOperations.get(savedId.toString());
-
-        log.info("savedToken={}", token);
 
         if(refresh.equals(token)){
             if(!accessValidate && !refreshValidate){
@@ -128,14 +122,10 @@ public class AuthServiceImpl implements AuthService {
             } else if(!accessValidate){
                 Member member = memberRepository.findMemberById(savedId);
 
-                log.info(member.getId().toString());
-
                 String password = member.getPassword();
 
                 List<AccessRole> roles = new ArrayList<>();
                 roles.add(AccessRole.valueOf(member.getRole()));
-
-                log.info(roles.toString());
 
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(savedId.toString(), password, roles);
@@ -146,19 +136,14 @@ public class AuthServiceImpl implements AuthService {
 
                 return ResponseEntity.ok(new AuthLogoutResponse(newAccessToken, null, "ok"));
             } else if(!refreshValidate){
-                log.info("authorization={}", authorization);
                 Authentication authorizationToken = jwtProvider.getAuthentication(authorization); // 오류 발생지
-                log.info("authorizationToken={}", authorizationToken);
                 UUID id = UUID.fromString(authorizationToken.getName());
-                log.info("id={}", id);
                 String newRefresh = jwtProvider.generateRefreshToken(authorizationToken);
-                log.info("newRefresh={}",newRefresh);
 
                 stringValueOperations.set(id.toString(), newRefresh);
 
                 return ResponseEntity.ok(new AuthLogoutResponse(null, newRefresh, "ok"));
             } else {
-                log.info("ok");
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         } else throw new RuntimeException();

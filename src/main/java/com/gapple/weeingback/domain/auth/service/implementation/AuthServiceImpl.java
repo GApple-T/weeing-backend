@@ -6,8 +6,7 @@ import com.gapple.weeingback.domain.member.entity.AccessRole;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.email.service.EmailService;
-import com.gapple.weeingback.global.exception.MemberExistsException;
-import com.gapple.weeingback.global.exception.PasswordNotMatchException;
+import com.gapple.weeingback.global.exception.*;
 import com.gapple.weeingback.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -33,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final StringRedisTemplate stringRedisTemplate;
 
-    @Transactional(rollbackFor = RuntimeException.class)
+    @Transactional
     public ResponseEntity<AuthJoinResponse> join(AuthJoinRequest req){
         if(!memberRepository.existsMemberByEmail(req.getEmail())) {
             Member member = Member.builder()
@@ -52,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public ResponseEntity<AuthLoginResponse> login(AuthLoginRequest request){
         Member member = memberRepository.findMemberByEmail(request.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword()))
             throw new PasswordNotMatchException();
@@ -73,11 +72,11 @@ public class AuthServiceImpl implements AuthService {
         return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
     }
 
-    @Transactional(rollbackFor = RuntimeException.class)
+    @Transactional
     public ResponseEntity<?> logout(String headerAuthorization, String headerRefresh) {
 
-        if(headerRefresh == null){
-            throw new RuntimeException();
+        if(headerRefresh.isEmpty() || headerAuthorization.isEmpty()){
+            throw new TokenNotFoundException();
         }
         String refresh = jwtProvider.resolveToken(headerRefresh);
 
@@ -89,14 +88,14 @@ public class AuthServiceImpl implements AuthService {
 
         if(refresh.equals(savedRefresh)){
             stringValueOperations.set(refreshKey.toString(), "");
-        } else throw new RuntimeException();
+        } else throw new TokenNotEqualsException();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Transactional(rollbackFor = RuntimeException.class)
+    @Transactional
     public ResponseEntity<AuthLogoutResponse> refresh(String headerAuthorization, String headerRefresh){
-        if(headerRefresh == null){
-            throw new RuntimeException();
+        if(headerRefresh.isEmpty() || headerAuthorization.isEmpty()){
+            throw new TokenNotFoundException();
         }
         String refresh = jwtProvider.resolveToken(headerRefresh);
         String authorization = jwtProvider.resolveToken(headerAuthorization);
@@ -115,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
 
         if(refresh.equals(token)){
             if(!accessValidate && !refreshValidate){
-                throw new RuntimeException();
+                throw new TokenValidateException();
             } else if(!accessValidate){
                 Member member = memberRepository.findMemberById(savedId);
 
@@ -141,7 +140,7 @@ public class AuthServiceImpl implements AuthService {
             } else {
                 return ResponseEntity.ok().body(new AuthLogoutResponse(null, null, "ok"));
             }
-        } else throw new RuntimeException();
+        } else throw new TokenNotEqualsException();
     }
 
 

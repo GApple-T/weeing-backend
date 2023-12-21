@@ -82,7 +82,7 @@ import static org.springframework.security.core.authority.AuthorityUtils.createA
      }
 
      public boolean validateToken(String token) {
-         if (token == null) {
+         if (token.isEmpty()) {
              return false;
          }
 

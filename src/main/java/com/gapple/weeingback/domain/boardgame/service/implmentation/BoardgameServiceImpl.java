@@ -13,7 +13,6 @@ import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.exception.BoardgameExistsException;
 import com.gapple.weeingback.global.exception.SameCreatorException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class BoardgameServiceImpl implements BoardgameService {
     private final BoardgameRepository boardgameRepository;

@@ -22,13 +22,12 @@ spring:
     redis:
       port: ${REDIS_PORT}
       host: ${REDIS_HOST}
+      password: ${REDIS_PASSWORD}
       jedis:
         pool:
           max-idle: 8
           min-idle: 0
           max-wait: 1
-      sentinel:
-        password: ${REDIS_PASSWORD}
 
   jpa:
     open-in-view: false

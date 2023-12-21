@@ -37,4 +37,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<HttpStatus> handleMethodSameConsultingException(){
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<HttpStatus> handleMethodTokenNotFoundException(){
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TokenNotEqualsException.class)
+    public ResponseEntity<HttpStatus> handleMethodTokenNotEqualsException(){
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TokenValidateException.class)
+    public ResponseEntity<HttpStatus> handleMethodTokenValidateException(){
+        return new ResponseEntity<>(HttpStatus.SEE_OTHER);
+    }
 }

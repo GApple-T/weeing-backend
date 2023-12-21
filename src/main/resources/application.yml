@@ -20,8 +20,8 @@ spring:
             enable: true
   data:
     redis:
-      port: 6379
-      host: localhost
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
       jedis:
         pool:
           max-idle: 8

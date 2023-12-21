@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,12 +67,20 @@ public class AuthServiceImpl implements AuthService {
         roles.add(AccessRole.valueOf(member.getRole()));
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(id, password, roles);
-
         String access = jwtProvider.generateAccessToken(authentication);
         String refresh = jwtProvider.generateRefreshToken(authentication);
+        
+      if(refreshTokenRepository.existsByKey(id)){
+            RefreshToken savedToken = refreshTokenRepository.findRefreshTokenByKey(id);
+            refreshTokenRepository.delete(savedToken);
+        }
 
-        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
-        stringValueOperations.set(id, refresh);
+        RefreshToken refreshToken = RefreshToken.builder()
+            .key(id)
+            .value(refresh)
+            .build();
+
+        refreshTokenRepository.save(refreshToken);
 
         return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
     }
@@ -83,59 +93,93 @@ public class AuthServiceImpl implements AuthService {
         }
         String refresh = jwtProvider.resolveToken(headerRefresh);
 
-        if(jwtProvider.validateToken(refresh)){
             Authentication refreshToken = jwtProvider.getAuthentication(refresh);
             UUID refreshKey = UUID.fromString(refreshToken.getName());
 
-            ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
-            String tokenValue = stringValueOperations.get(refreshKey.toString());
-//            RefreshToken savedRefreshToken = refreshTokenRepository.findRefreshTokenByKey(refreshKey);
 
+            RefreshToken savedRefreshToken = refreshTokenRepository.findRefreshTokenByKey(refreshKey);
+            String savedRefresh = savedRefreshToken.getValue();
 
-            if(jwtProvider.validateToken(tokenValue) &&
-                    refresh.equals(tokenValue)){
-//                refreshTokenRepository.delete(savedRefreshToken);
-                stringValueOperations.decrement(refreshKey.toString());
+            if(refresh.equals(savedRefresh)){
+                refreshTokenRepository.delete(savedRefreshToken);
             } else throw new RuntimeException();
 
             return new ResponseEntity<>(HttpStatus.OK);
-        } else throw new RuntimeException();
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
-    public ResponseEntity<AuthLogoutResponse> refresh(String refresh){
-        if(refresh == null){
+    public ResponseEntity<AuthLogoutResponse> refresh(String headerAuthorization, String headerRefresh){
+        if(headerRefresh == null){
             throw new RuntimeException();
         }
+        String refresh = jwtProvider.resolveToken(headerRefresh);
+        String authorization = jwtProvider.resolveToken(headerAuthorization);
+        log.info("Access={}, Refresh={}", authorization, refresh);
+        log.info(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
 
-        refresh = jwtProvider.resolveToken(refresh);
+        boolean accessValidate = jwtProvider.validateToken(authorization);
+        boolean refreshValidate = jwtProvider.validateToken(refresh);
 
-        Authentication token = jwtProvider.getAuthentication(refresh);
-        String key = token.getName();
+        UUID savedId;
+        if(refreshValidate){
+                Authentication refreshToken = jwtProvider.getAuthentication(refresh);
+                log.info("Authorities={}", refreshToken.getAuthorities());
+                savedId = UUID.fromString(refreshToken.getName());
+        } else savedId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        log.info("savedId={}", savedId);
 
-        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        String value = operations.get(key);
+        RefreshToken savedToken =
+                refreshTokenRepository.findRefreshTokenByKey(savedId);
 
-        if(!jwtProvider.validateToken(value) && !refresh.equals(value)) {
-            throw new RuntimeException();
-        }
+        log.info("savedToken={}", savedToken.getValue());
 
-        Member member = memberRepository.findMemberById(UUID.fromString(key));
+        if(refresh.equals(savedToken.getValue())){
+            if(!accessValidate && !refreshValidate){
+                throw new RuntimeException();
+            } else if(!accessValidate){
+                Member member = memberRepository.findMemberById(savedId);
 
-        String id = member.getId().toString();
-        String password = member.getPassword();
+                log.info(member.getId().toString());
 
-        List<AccessRole> roles = new ArrayList<>();
-        roles.add(AccessRole.valueOf(member.getRole()));
+                String password = member.getPassword();
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(id, password, roles);
+                List<AccessRole> roles = new ArrayList<>();
+                roles.add(AccessRole.valueOf(member.getRole()));
 
-        String newAccess = jwtProvider.generateAccessToken(authentication);
-        String newRefresh = jwtProvider.generateRefreshToken(authentication);
+                log.info(roles.toString());
 
-        operations.set(id, newRefresh);
+                Authentication authentication =
+                        new UsernamePasswordAuthenticationToken(savedId.toString(), password, roles);
 
-        return ResponseEntity.ok(new AuthLogoutResponse(newAccess, newRefresh, "ok"));
+                log.info(authentication.getAuthorities().toString());
+
+                String newAccessToken = jwtProvider.generateAccessToken(authentication);
+
+                return ResponseEntity.ok(new AuthLogoutResponse(newAccessToken, null, "ok"));
+            } else if(!refreshValidate){
+                log.info("authorization={}", authorization);
+                Authentication authorizationToken = jwtProvider.getAuthentication(authorization); // 오류 발생지
+                log.info("authorizationToken={}", authorizationToken);
+                UUID id = UUID.fromString(authorizationToken.getName());
+                log.info("id={}", id);
+                String newRefresh = jwtProvider.generateRefreshToken(authorizationToken);
+                log.info("newRefresh={}",newRefresh);
+
+                RefreshToken newRefreshToken = RefreshToken.builder()
+                        .key(id)
+                        .value(newRefresh)
+                        .build();
+                log.info("newRefreshToken={}", newRefreshToken);
+
+                refreshTokenRepository.delete(savedToken);
+                refreshTokenRepository.save(newRefreshToken);
+
+                return ResponseEntity.ok(new AuthLogoutResponse(null, newRefresh, "ok"));
+            } else {
+                log.info("ok");
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } else throw new RuntimeException();
     }
 
 

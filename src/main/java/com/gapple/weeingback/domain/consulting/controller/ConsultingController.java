@@ -6,11 +6,13 @@ import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingSho
 import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingSubmitResponse;
 import com.gapple.weeingback.domain.consulting.service.ConsultingService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingSubmitRequest;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/consulting")
 @RequiredArgsConstructor

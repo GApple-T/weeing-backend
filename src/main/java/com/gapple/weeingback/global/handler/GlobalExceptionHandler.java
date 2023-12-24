@@ -1,5 +1,6 @@
 package com.gapple.weeingback.global.handler;
 
+import com.gapple.weeingback.domain.consulting.exception.ConsultingNotFoundException;
 import com.gapple.weeingback.global.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,5 +63,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<HttpStatus> handleMethodArgumentNotValidException(){
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConsultingNotFoundException.class)
+    public ResponseEntity<HttpStatus> consultingNotFoundException(){
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

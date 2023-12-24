@@ -7,12 +7,14 @@ import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingCan
 import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingShowResponse;
 import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingSubmitRequest;
 import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingSubmitResponse;
+import com.gapple.weeingback.domain.consulting.exception.ConsultingNotFoundException;
 import com.gapple.weeingback.domain.consulting.repository.ConsultingRepository;
 import com.gapple.weeingback.domain.consulting.service.ConsultingService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.exception.SameConsultingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ConsultingServiceImpl implements ConsultingService {
     private final MemberRepository memberRepository;
@@ -37,10 +40,10 @@ public class ConsultingServiceImpl implements ConsultingService {
 
         Consulting consulting = Consulting.toConsulting(
                 Instant.now().toEpochMilli(),
-                request.getClassTime(),
+                request.getTime(),
                 request.getDescription());
 
-        if(consultingRepository.existsByClassTime(consulting.getClassTime())){
+        if(consultingRepository.existsByTime(consulting.getTime())){
             throw new SameConsultingException();
         }
 
@@ -64,7 +67,7 @@ public class ConsultingServiceImpl implements ConsultingService {
         consults.forEach(consulting -> consultingResponses.add(new ToConsultingResponse(
                 consulting.getId().toString(),
                 consulting.getIssuedAt(),
-                consulting.getClassTime(),
+                consulting.getTime(),
                 consulting.getDescription())));
 
         return ResponseEntity.ok().body(new ConsultingShowResponse(consultingResponses, "ok"));
@@ -78,7 +81,7 @@ public class ConsultingServiceImpl implements ConsultingService {
 
         if(consulting != null){
             consultingRepository.deleteById(UUID.fromString(request.getConsultingId()));
-        } else throw new IllegalArgumentException();
+        } else throw new ConsultingNotFoundException("상담 신청서를 찾을 수 없습니다.");
 
         return ResponseEntity.ok().body(new ConsultingCancleResponse("ok"));
     }

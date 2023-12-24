@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ConsultingSubmitRequest {
     @NotNull
-    private Long classTime;
+    private Long time;
 
     @NotBlank
     private String description;

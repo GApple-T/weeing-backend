@@ -23,7 +23,7 @@ public class Consulting {
   private Long issuedAt;
 
   @Column(nullable = false)
-  private Long classTime;
+  private Long time;
 
   @Column(nullable = false)
   private boolean isAccess;
@@ -31,13 +31,13 @@ public class Consulting {
   @Column(columnDefinition = "VARCHAR(3000)")
   private String description;
 
-  public Consulting(Long issuedAt, Long classTime, String description) {
+  public Consulting(Long issuedAt, Long time, String description) {
     this.issuedAt = issuedAt;
-    this.classTime = classTime;
+    this.time = time;
     this.description = description;
   }
 
-  public static Consulting toConsulting(Long issuedAt, Long classTime, String description){
-    return new Consulting(issuedAt, classTime, description);
+  public static Consulting toConsulting(Long issuedAt, Long time, String description){
+    return new Consulting(issuedAt, time, description);
   }
 }

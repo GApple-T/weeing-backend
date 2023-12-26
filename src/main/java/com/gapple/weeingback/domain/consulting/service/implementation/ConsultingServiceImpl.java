@@ -43,9 +43,11 @@ public class ConsultingServiceImpl implements ConsultingService {
                 request.getTime(),
                 request.getDescription());
 
-        if(consultingRepository.existsByTime(consulting.getTime())){
-            throw new SameConsultingException();
-        }
+        member.getConsulting().forEach(c -> {
+            if(request.getTime() == c.getTime()){
+                throw new SameConsultingException();
+            }
+        });
 
         member.addConsulting(consulting);
 

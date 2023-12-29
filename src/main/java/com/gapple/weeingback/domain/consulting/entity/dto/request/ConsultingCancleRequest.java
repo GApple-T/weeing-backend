@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ConsultingCancleRequest {
     @NotBlank
-    private String consultingId;
+    private String id;
 }

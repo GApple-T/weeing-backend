@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.boardgame.entity;
+package com.gapple.weeingback.domain.boardgame.domain;
 
 import com.gapple.weeingback.domain.member.entity.NumberNameWithId;
 import lombok.AllArgsConstructor;

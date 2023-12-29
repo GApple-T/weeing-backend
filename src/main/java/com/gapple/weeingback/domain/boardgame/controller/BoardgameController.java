@@ -1,14 +1,13 @@
 package com.gapple.weeingback.domain.boardgame.controller;
 
-import com.gapple.weeingback.domain.boardgame.entity.dto.request.BoardgameJoinRequest;
-import com.gapple.weeingback.domain.boardgame.entity.dto.request.BoardgameSubmitRequest;
-import com.gapple.weeingback.domain.boardgame.entity.dto.request.BoardgameDoneRequest;
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameCreateResponse;
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameDoneResponse;
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameShowResponse;
+import com.gapple.weeingback.domain.boardgame.domain.dto.request.BoardgameJoinRequest;
+import com.gapple.weeingback.domain.boardgame.domain.dto.request.BoardgameSubmitRequest;
+import com.gapple.weeingback.domain.boardgame.domain.dto.request.BoardgameDoneRequest;
+import com.gapple.weeingback.domain.boardgame.domain.dto.response.BoardgameShowResponse;
 import com.gapple.weeingback.domain.boardgame.service.BoardgameService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,22 +21,26 @@ public class BoardgameController {
     private final BoardgameService boardgameService;
 
     @PostMapping("/submit")
-    public ResponseEntity<BoardgameCreateResponse> submitBoardgame(@Valid @RequestBody BoardgameSubmitRequest request){
-        return boardgameService.submitBoardgame(request.getMaxOf());
+    public ResponseEntity<Void> submitBoardgame(@Valid @RequestBody BoardgameSubmitRequest request){
+        boardgameService.submitBoardgame(request.getMaxOf());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/join")
-    public ResponseEntity joinBoardgame(@Valid @RequestBody BoardgameJoinRequest request){
-        return boardgameService.joinBoardgame(UUID.fromString(request.getId()));
+    public ResponseEntity<Void> joinBoardgame(@Valid @RequestBody BoardgameJoinRequest request){
+        boardgameService.joinBoardgame(UUID.fromString(request.getId()));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/list")
     public ResponseEntity<BoardgameShowResponse> showAllBoardgame(){
-        return boardgameService.showAllBoardgame();
+        BoardgameShowResponse response = boardgameService.showAllBoardgame();
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/done")
-    public ResponseEntity<BoardgameDoneResponse> doneBoardgame(@RequestBody BoardgameDoneRequest request){
-        return boardgameService.doneBoardgame(UUID.fromString(request.getId()));
+    public ResponseEntity<Void> doneBoardgame(@RequestBody BoardgameDoneRequest request){
+        boardgameService.doneBoardgame(UUID.fromString(request.getId()));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

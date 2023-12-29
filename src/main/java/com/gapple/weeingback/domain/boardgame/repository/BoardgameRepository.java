@@ -1,6 +1,6 @@
 package com.gapple.weeingback.domain.boardgame.repository;
 
-import com.gapple.weeingback.domain.boardgame.entity.Boardgame;
+import com.gapple.weeingback.domain.boardgame.domain.Boardgame;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

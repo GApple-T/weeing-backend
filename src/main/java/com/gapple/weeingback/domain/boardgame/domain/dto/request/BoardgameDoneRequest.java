@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.boardgame.entity.dto.request;
+package com.gapple.weeingback.domain.boardgame.domain.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

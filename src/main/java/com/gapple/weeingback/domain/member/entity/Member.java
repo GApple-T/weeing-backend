@@ -39,7 +39,7 @@ public class Member implements GrantedAuthority {
   @Column(columnDefinition = "VARCHAR(80)", nullable = false)
   private String role;
 
-  @OneToMany()
+  @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "consulting_id")
   private List<Consulting> consulting;
 

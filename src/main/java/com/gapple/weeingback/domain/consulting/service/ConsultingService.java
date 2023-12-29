@@ -1,18 +1,22 @@
 package com.gapple.weeingback.domain.consulting.service;
 
+import com.gapple.weeingback.domain.consulting.entity.ToConsultingResponse;
 import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingCancleRequest;
-import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingCancleResponse;
+import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingUpdateRequest;
 import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingShowResponse;
 import com.gapple.weeingback.domain.consulting.entity.dto.request.ConsultingSubmitRequest;
-import com.gapple.weeingback.domain.consulting.entity.dto.response.ConsultingSubmitResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface ConsultingService {
-    ResponseEntity<ConsultingSubmitResponse> submitConsulting(ConsultingSubmitRequest request);
+    void submitConsulting(ConsultingSubmitRequest request);
 
-    ResponseEntity<ConsultingShowResponse> showConsulting();
+    List<ToConsultingResponse> showConsulting();
 
-    ResponseEntity<ConsultingCancleResponse> cancleConsulting(ConsultingCancleRequest request);
+    void cancleConsulting(ConsultingCancleRequest request);
 
-    ResponseEntity<ConsultingShowResponse> showMyConsulting();
+    ConsultingShowResponse showMyConsulting();
+
+    void updateConsulting(ConsultingUpdateRequest request);
 }

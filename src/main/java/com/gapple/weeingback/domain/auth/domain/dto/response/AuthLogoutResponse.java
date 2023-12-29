@@ -1,14 +1,12 @@
-package com.gapple.weeingback.domain.auth.domain.dto;
+package com.gapple.weeingback.domain.auth.domain.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AuthLoginResponse {
+public class AuthLogoutResponse {
     private String access;
 
     private String refresh;
-
-    private String success;
 }

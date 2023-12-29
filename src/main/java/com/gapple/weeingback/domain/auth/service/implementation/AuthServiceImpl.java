@@ -1,6 +1,10 @@
 package com.gapple.weeingback.domain.auth.service.implementation;
 
-import com.gapple.weeingback.domain.auth.domain.dto.*;
+import com.gapple.weeingback.domain.auth.domain.dto.request.AuthJoinRequest;
+import com.gapple.weeingback.domain.auth.domain.dto.request.AuthLoginRequest;
+import com.gapple.weeingback.domain.auth.domain.dto.request.EmailCertifyRequest;
+import com.gapple.weeingback.domain.auth.domain.dto.response.AuthLoginResponse;
+import com.gapple.weeingback.domain.auth.domain.dto.response.AuthLogoutResponse;
 import com.gapple.weeingback.domain.auth.service.AuthService;
 import com.gapple.weeingback.domain.member.entity.AccessRole;
 import com.gapple.weeingback.domain.member.entity.Member;
@@ -33,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final StringRedisTemplate stringRedisTemplate;
 
     @Transactional
-    public ResponseEntity<AuthJoinResponse> join(AuthJoinRequest req){
+    public void join(AuthJoinRequest req){
         if(!memberRepository.existsMemberByEmail(req.getEmail())) {
             Member member = Member.builder()
                     .email(req.getEmail())
@@ -44,12 +48,11 @@ public class AuthServiceImpl implements AuthService {
                     .build();
 
             memberRepository.save(member);
-            return ResponseEntity.ok(new AuthJoinResponse("ok"));
         } else throw new MemberExistsException();
     }
 
     @Transactional
-    public ResponseEntity<AuthLoginResponse> login(AuthLoginRequest request){
+    public AuthLoginResponse login(AuthLoginRequest request){
         Member member = memberRepository.findMemberByEmail(request.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -69,11 +72,11 @@ public class AuthServiceImpl implements AuthService {
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         stringValueOperations.set(id, refresh);
 
-        return ResponseEntity.ok(new AuthLoginResponse(access, refresh, "ok"));
+        return new AuthLoginResponse(access, refresh);
     }
 
     @Transactional
-    public ResponseEntity<?> logout(String headerAuthorization, String headerRefresh) {
+    public void logout(String headerAuthorization, String headerRefresh) {
 
         if(headerRefresh.isEmpty() || headerAuthorization.isEmpty()){
             throw new TokenNotFoundException();
@@ -87,13 +90,12 @@ public class AuthServiceImpl implements AuthService {
         String savedRefresh = stringValueOperations.get(refreshKey);
 
         if(refresh.equals(savedRefresh)){
-            stringValueOperations.set(refreshKey.toString(), "");
+            stringValueOperations.set(refreshKey, "");
         } else throw new TokenNotEqualsException();
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<AuthLogoutResponse> refresh(String headerAuthorization, String headerRefresh){
+    public AuthLogoutResponse refresh(String headerAuthorization, String headerRefresh){
         if(headerRefresh.isEmpty() || headerAuthorization.isEmpty()){
             throw new TokenNotFoundException();
         }
@@ -128,7 +130,7 @@ public class AuthServiceImpl implements AuthService {
 
                 String newAccessToken = jwtProvider.generateAccessToken(authentication);
 
-                return ResponseEntity.ok(new AuthLogoutResponse(newAccessToken, null, "ok"));
+                return new AuthLogoutResponse(newAccessToken, null);
             } else if(!refreshValidate){
                 Authentication authorizationToken = jwtProvider.getAuthentication(authorization); // 오류 발생지
                 UUID id = UUID.fromString(authorizationToken.getName());
@@ -136,9 +138,9 @@ public class AuthServiceImpl implements AuthService {
 
                 stringValueOperations.set(id.toString(), newRefresh);
 
-                return ResponseEntity.ok(new AuthLogoutResponse(null, newRefresh, "ok"));
+                return new AuthLogoutResponse(null, newRefresh);
             } else {
-                return ResponseEntity.ok().body(new AuthLogoutResponse(null, null, "ok"));
+                return new AuthLogoutResponse(null, null);
             }
         } else throw new TokenNotEqualsException();
     }

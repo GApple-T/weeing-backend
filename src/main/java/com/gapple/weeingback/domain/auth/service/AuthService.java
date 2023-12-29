@@ -1,12 +1,16 @@
 package com.gapple.weeingback.domain.auth.service;
 
-import com.gapple.weeingback.domain.auth.domain.dto.*;
+import com.gapple.weeingback.domain.auth.domain.dto.request.AuthJoinRequest;
+import com.gapple.weeingback.domain.auth.domain.dto.request.AuthLoginRequest;
+import com.gapple.weeingback.domain.auth.domain.dto.request.EmailCertifyRequest;
+import com.gapple.weeingback.domain.auth.domain.dto.response.AuthLoginResponse;
+import com.gapple.weeingback.domain.auth.domain.dto.response.AuthLogoutResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    ResponseEntity<AuthJoinResponse> join(AuthJoinRequest request);
-    ResponseEntity login(AuthLoginRequest request);
-    ResponseEntity logout(String headerAuthorization, String headerRefresh);
-    ResponseEntity<AuthLogoutResponse> refresh(String headerAuthorization, String headerRefresh);
+    void join(AuthJoinRequest request);
+    AuthLoginResponse login(AuthLoginRequest request);
+    void logout(String headerAuthorization, String headerRefresh);
+    AuthLogoutResponse refresh(String headerAuthorization, String headerRefresh);
     ResponseEntity sendAuth(EmailCertifyRequest request);
 }

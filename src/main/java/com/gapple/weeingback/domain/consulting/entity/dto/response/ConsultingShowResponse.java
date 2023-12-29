@@ -15,6 +15,4 @@ import java.util.List;
 public class ConsultingShowResponse {
 
     private List<ToConsultingResponse> consults;
-
-    private String success;
 }

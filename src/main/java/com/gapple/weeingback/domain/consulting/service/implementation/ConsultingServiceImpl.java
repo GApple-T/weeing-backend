@@ -74,11 +74,11 @@ public class ConsultingServiceImpl implements ConsultingService {
     @Override
     @Transactional
     public void cancleConsulting(ConsultingCancleRequest request) {
-        UUID id = UUID.fromString(request.getConsultingId());
+        UUID id = UUID.fromString(request.getId());
         Optional<Consulting> consulting = consultingRepository.findById(id);
 
         if(consulting != null){
-            consultingRepository.deleteById(UUID.fromString(request.getConsultingId()));
+            consultingRepository.deleteById(UUID.fromString(request.getId()));
         } else throw new ConsultingNotFoundException();
     }
 

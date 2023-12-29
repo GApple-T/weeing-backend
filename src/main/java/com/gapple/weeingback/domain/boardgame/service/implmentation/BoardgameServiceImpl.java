@@ -1,11 +1,8 @@
 package com.gapple.weeingback.domain.boardgame.service.implmentation;
 
-import com.gapple.weeingback.domain.boardgame.entity.Boardgame;
-import com.gapple.weeingback.domain.boardgame.entity.ToBoardgameDto;
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameDoneResponse;
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameCreateResponse;
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameJoinResponse;
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameShowResponse;
+import com.gapple.weeingback.domain.boardgame.domain.Boardgame;
+import com.gapple.weeingback.domain.boardgame.domain.ToBoardgameDto;
+import com.gapple.weeingback.domain.boardgame.domain.dto.response.BoardgameShowResponse;
 import com.gapple.weeingback.domain.boardgame.repository.BoardgameRepository;
 import com.gapple.weeingback.domain.boardgame.service.BoardgameService;
 import com.gapple.weeingback.domain.member.entity.Member;
@@ -13,7 +10,6 @@ import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.exception.BoardgameExistsException;
 import com.gapple.weeingback.global.exception.SameCreatorException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +26,7 @@ public class BoardgameServiceImpl implements BoardgameService {
 
     @Override
     @Transactional
-    public ResponseEntity<BoardgameCreateResponse> submitBoardgame(Long maxOf) {
+    public void submitBoardgame(Long maxOf) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberById(UUID.fromString(id));
 
@@ -48,23 +44,21 @@ public class BoardgameServiceImpl implements BoardgameService {
 
         memberRepository.save(member);
         boardgameRepository.save(boardgame);
-
-        return ResponseEntity.ok().body(new BoardgameCreateResponse("ok"));
     }
 
     @Override
-    public ResponseEntity<BoardgameShowResponse> showAllBoardgame() {
+    public BoardgameShowResponse showAllBoardgame() {
         List<Boardgame> boardgames = boardgameRepository.findAll();
         List<ToBoardgameDto> boardgameDtos = new ArrayList<>();
         boardgames.forEach(boardgame ->
             boardgameDtos.add(boardgame.toDto(boardgame))
         );
 
-        return ResponseEntity.ok().body(new BoardgameShowResponse("ok", boardgameDtos));
+        return new BoardgameShowResponse(boardgameDtos);
     }
 
     @Override
-    public ResponseEntity<BoardgameJoinResponse> joinBoardgame(UUID id) {
+    public void joinBoardgame(UUID id) {
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberById(UUID.fromString(memberId));
 
@@ -77,16 +71,13 @@ public class BoardgameServiceImpl implements BoardgameService {
         boardgame.addMember(member);
 
         boardgameRepository.save(boardgame);
-
-        return ResponseEntity.ok().body(new BoardgameJoinResponse("ok"));
     }
 
     @Override
-    public ResponseEntity<BoardgameDoneResponse> doneBoardgame(UUID id) {
+    public void doneBoardgame(UUID id) {
         Boardgame boardgame =
                 boardgameRepository.findBoardgameById(id);
 
         boardgameRepository.delete(boardgame);
-        return ResponseEntity.ok().body(new BoardgameDoneResponse("ok"));
     }
 }

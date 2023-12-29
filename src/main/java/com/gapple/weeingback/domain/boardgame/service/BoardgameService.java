@@ -1,18 +1,16 @@
 package com.gapple.weeingback.domain.boardgame.service;
 
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameCreateResponse;
-import com.gapple.weeingback.domain.boardgame.entity.dto.response.BoardgameShowResponse;
+import com.gapple.weeingback.domain.boardgame.domain.dto.response.BoardgameShowResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
-import java.util.function.LongFunction;
 
 public interface BoardgameService {
-    ResponseEntity<BoardgameCreateResponse> submitBoardgame(Long maxOf);
+    void submitBoardgame(Long maxOf);
 
-    ResponseEntity<BoardgameShowResponse> showAllBoardgame();
+    BoardgameShowResponse showAllBoardgame();
 
-    ResponseEntity doneBoardgame(UUID id);
+    void doneBoardgame(UUID id);
 
-    ResponseEntity joinBoardgame(UUID id);
+    void joinBoardgame(UUID id);
 }

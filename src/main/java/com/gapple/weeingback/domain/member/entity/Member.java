@@ -1,6 +1,6 @@
 package com.gapple.weeingback.domain.member.entity;
 
-import com.gapple.weeingback.domain.boardgame.entity.Boardgame;
+import com.gapple.weeingback.domain.boardgame.domain.Boardgame;
 import com.gapple.weeingback.domain.consulting.entity.Consulting;
 
 import com.gapple.weeingback.domain.diary.entity.Diary;

@@ -25,19 +25,19 @@ public class ConsultingController {
     @PostMapping("/submit")
     public ResponseEntity<Void> submitConsulting(@Validated @RequestBody ConsultingSubmitRequest request){
         consultingService.submitConsulting(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/list")
     public ResponseEntity<ConsultingShowResponse> showConsulting(){
         List<ToConsultingResponse> consultings = consultingService.showConsulting();
-        return new ResponseEntity(new ConsultingShowResponse(consultings) ,HttpStatus.OK);
+        return new ResponseEntity<>(new ConsultingShowResponse(consultings) ,HttpStatus.OK);
     }
 
     @DeleteMapping("/cancle")
     public ResponseEntity<Void> cancleConsulting(@Validated @RequestBody ConsultingCancleRequest request){
         consultingService.cancleConsulting(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/my-list")
@@ -49,6 +49,6 @@ public class ConsultingController {
     @PatchMapping("/update")
     public ResponseEntity<Void> updateConsulting(@Validated @RequestBody ConsultingUpdateRequest request){
         consultingService.updateConsulting(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -1,6 +1,5 @@
 package com.gapple.weeingback.global.handler;
 
-import com.gapple.weeingback.domain.consulting.exception.ConsultingNotFoundException;
 import com.gapple.weeingback.global.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

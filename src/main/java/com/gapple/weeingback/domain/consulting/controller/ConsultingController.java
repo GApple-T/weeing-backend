@@ -20,7 +20,7 @@ public class ConsultingController {
     private final ConsultingService consultingService;
 
     @PostMapping("/submit")
-    public ResponseEntity<ConsultingSubmitResponse> submitConsulting(@Valid @RequestBody ConsultingSubmitRequest request){gg
+    public ResponseEntity<ConsultingSubmitResponse> submitConsulting(@Valid @RequestBody ConsultingSubmitRequest request){
         return consultingService.submitConsulting(request);
     }
 

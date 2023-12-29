@@ -5,7 +5,6 @@ import com.gapple.weeingback.domain.diary.entity.dto.request.DiaryListRequest;
 import com.gapple.weeingback.domain.diary.entity.dto.request.DiarySubmitRequest;
 import com.gapple.weeingback.domain.diary.entity.dto.response.DiaryListResponse;
 import com.gapple.weeingback.domain.diary.entity.dto.response.DiaryMyListResponse;
-import com.gapple.weeingback.domain.diary.entity.dto.response.DiarySubmitResponse;
 import com.gapple.weeingback.domain.diary.repository.DiaryRepository;
 import com.gapple.weeingback.domain.diary.service.DiaryService;
 import com.gapple.weeingback.domain.member.entity.Member;
@@ -26,7 +25,7 @@ public class DiaryServiceImpl implements DiaryService {
     private final MemberRepository memberRepository;
     @Override
     @Transactional
-    public ResponseEntity<DiarySubmitResponse> submitDiary(DiarySubmitRequest request) {
+    public void submitDiary(DiarySubmitRequest request) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberById(UUID.fromString(id));
 
@@ -41,13 +40,11 @@ public class DiaryServiceImpl implements DiaryService {
 
         memberRepository.save(member);
         diaryRepository.save(diary);
-
-        return ResponseEntity.ok().body(new DiarySubmitResponse("ok"));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<DiaryListResponse> listDiary(DiaryListRequest request) {
+    public DiaryListResponse listDiary(DiaryListRequest request) {
         List<Diary> diaries;
 
         if(request.getStudentClass() == null){
@@ -59,16 +56,16 @@ public class DiaryServiceImpl implements DiaryService {
             );
         }
 
-        return ResponseEntity.ok().body(new DiaryListResponse(diaries ,"ok"));
+        return new DiaryListResponse(diaries);
     }
 
     @Override
-    public ResponseEntity<DiaryMyListResponse> myListDiary() {
+    public DiaryMyListResponse myListDiary() {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Member member = memberRepository.findMemberById(UUID.fromString(id));
         List<Diary> diaries = member.getDiaries();
 
-        return ResponseEntity.ok().body(new DiaryMyListResponse(diaries, "ok"));
+        return new DiaryMyListResponse(diaries);
     }
 }

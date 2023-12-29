@@ -12,6 +12,4 @@ import java.util.List;
 @AllArgsConstructor
 public class DiaryListResponse {
     private List<Diary> diaries;
-
-    private String success;
 }

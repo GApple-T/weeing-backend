@@ -10,7 +10,7 @@ public class ToConsultingResponse {
 
     private Long issuedAt;
 
-    private Long classTime;
+    private Long time;
 
     private String description;
 }

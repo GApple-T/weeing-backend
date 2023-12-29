@@ -49,6 +49,7 @@ public class ConsultingServiceImpl implements ConsultingService {
             }
         });
 
+
         member.addConsulting(consulting);
 
         consultingRepository.save(consulting);
@@ -65,7 +66,7 @@ public class ConsultingServiceImpl implements ConsultingService {
 
         List<ToConsultingResponse> consultingResponses = new ArrayList<>();
 
-        List<Consulting> consults = member.getConsulting();
+        List<Consulting> consults = consultingRepository.findAll();
         consults.forEach(consulting -> consultingResponses.add(new ToConsultingResponse(
                 consulting.getId().toString(),
                 consulting.getIssuedAt(),
@@ -86,5 +87,22 @@ public class ConsultingServiceImpl implements ConsultingService {
         } else throw new ConsultingNotFoundException("상담 신청서를 찾을 수 없습니다.");
 
         return ResponseEntity.ok().body(new ConsultingCancleResponse("ok"));
+    }
+
+    @Override
+    public ResponseEntity<ConsultingShowResponse> showMyConsulting() {
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findMemberById(UUID.fromString(id));
+
+        List<ToConsultingResponse> consultingResponses = new ArrayList<>();
+
+        List<Consulting> consults = member.getConsulting();
+        consults.forEach(consulting -> consultingResponses.add(new ToConsultingResponse(
+                consulting.getId().toString(),
+                consulting.getIssuedAt(),
+                consulting.getTime(),
+                consulting.getDescription())));
+
+        return ResponseEntity.ok().body(new ConsultingShowResponse(consultingResponses, "ok"));
     }
 }

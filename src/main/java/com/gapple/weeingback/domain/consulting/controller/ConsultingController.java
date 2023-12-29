@@ -20,7 +20,7 @@ public class ConsultingController {
     private final ConsultingService consultingService;
 
     @PostMapping("/submit")
-    public ResponseEntity<ConsultingSubmitResponse> submitConsulting(@Valid @RequestBody ConsultingSubmitRequest request){
+    public ResponseEntity<ConsultingSubmitResponse> submitConsulting(@Valid @RequestBody ConsultingSubmitRequest request){gg
         return consultingService.submitConsulting(request);
     }
 
@@ -32,5 +32,10 @@ public class ConsultingController {
     @DeleteMapping("/cancle")
     public ResponseEntity<ConsultingCancleResponse> cancleConsulting(@Valid @RequestBody ConsultingCancleRequest request){
         return consultingService.cancleConsulting(request);
+    }
+
+    @GetMapping("/my-list")
+    public ResponseEntity<ConsultingShowResponse> showMyConsulting(){
+        return consultingService.showMyConsulting();
     }
 }

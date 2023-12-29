@@ -13,4 +13,6 @@ public interface ConsultingService {
     ResponseEntity<ConsultingShowResponse> showConsulting();
 
     ResponseEntity<ConsultingCancleResponse> cancleConsulting(ConsultingCancleRequest request);
+
+    ResponseEntity<ConsultingShowResponse> showMyConsulting();
 }

@@ -68,4 +68,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<HttpStatus> consultingNotFoundException(){
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(BoardgameNotFoundException.class)
+    public ResponseEntity<HttpStatus> baordgameNotFoundException(){
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

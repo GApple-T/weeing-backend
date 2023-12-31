@@ -8,6 +8,7 @@ import com.gapple.weeingback.domain.boardgame.service.BoardgameService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.exception.BoardgameExistsException;
+import com.gapple.weeingback.global.exception.BoardgameNotFoundException;
 import com.gapple.weeingback.global.exception.SameCreatorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -62,7 +63,7 @@ public class BoardgameServiceImpl implements BoardgameService {
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberById(UUID.fromString(memberId));
 
-        Boardgame boardgame = boardgameRepository.findBoardgameById(id);
+        Boardgame boardgame = boardgameRepository.findBoardgameById(id).orElseThrow(BoardgameNotFoundException::new);
 
         if(boardgame.getCreator().getId().toString().equals(memberId)){
             throw new SameCreatorException();
@@ -75,8 +76,7 @@ public class BoardgameServiceImpl implements BoardgameService {
 
     @Override
     public void doneBoardgame(UUID id) {
-        Boardgame boardgame =
-                boardgameRepository.findBoardgameById(id);
+        Boardgame boardgame = boardgameRepository.findBoardgameById(id).orElseThrow(BoardgameNotFoundException::new);
 
         boardgameRepository.delete(boardgame);
     }

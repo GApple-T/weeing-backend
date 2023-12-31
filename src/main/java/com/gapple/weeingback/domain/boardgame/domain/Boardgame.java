@@ -37,12 +37,12 @@ public class Boardgame {
 
     public ToBoardgameDto toDto(Boardgame boardgame){
         List<NumberNameWithId> players = new ArrayList<>();
-        boardgame.getMembers().forEach(member -> {
+        boardgame.getMembers().forEach(member ->
             players.add(new NumberNameWithId(
                     member.getNumber() + " " + member.getName(),
                     member.getId().toString()
-            ));
-        });
+            ))
+        );
 
         return new ToBoardgameDto(
                 boardgame.getId().toString(),

@@ -43,9 +43,9 @@ public class Member implements GrantedAuthority {
   @JoinColumn(name = "consulting_id")
   private List<Consulting> consulting;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "boardgame_id")
-  private Boardgame boardgame;
+  private List<Boardgame> boardgames;
 
   @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "diary_id")

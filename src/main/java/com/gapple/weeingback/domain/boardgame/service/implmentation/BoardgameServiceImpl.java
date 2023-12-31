@@ -37,7 +37,10 @@ public class BoardgameServiceImpl implements BoardgameService {
                 .joined(0L)
                 .build();
 
-        member.setBoardgame(boardgame);
+        List<Boardgame> boardgames = member.getBoardgames();
+        boardgames.add(boardgame);
+
+        member.setBoardgames(boardgames);
 
         memberRepository.save(member);
         boardgameRepository.save(boardgame);
@@ -76,7 +79,10 @@ public class BoardgameServiceImpl implements BoardgameService {
         Boardgame boardgame = boardgameRepository.findBoardgameById(boardgameId).orElseThrow(BoardgameNotFoundException::new);
 
         Member member = memberRepository.findMemberById(userId);
-        member.setBoardgame(null);
+
+        List<Boardgame> boardgames = member.getBoardgames();
+        boardgames.remove(boardgame);
+        member.setBoardgames(boardgames);
 
         memberRepository.save(member);
         boardgameRepository.delete(boardgame);

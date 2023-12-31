@@ -33,7 +33,6 @@ public class BoardgameServiceImpl implements BoardgameService {
         Boardgame boardgame = Boardgame.builder()
                 .creator(member)
                 .maxOf(maxOf)
-                .joined(0L)
                 .build();
 
         boardgameRepository.save(boardgame);

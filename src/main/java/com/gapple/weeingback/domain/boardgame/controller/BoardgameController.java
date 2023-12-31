@@ -35,6 +35,7 @@ public class BoardgameController {
     @GetMapping("/list")
     public ResponseEntity<BoardgameShowResponse> showAllBoardgame(){
         BoardgameShowResponse response = boardgameService.showAllBoardgame();
+
         return ResponseEntity.ok().body(response);
     }
 

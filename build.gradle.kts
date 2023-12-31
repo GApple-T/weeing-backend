@@ -35,7 +35,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     implementation("org.postgresql:postgresql:42.6.0")
-
+    implementation("redis.clients:jedis:5.1.0")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 

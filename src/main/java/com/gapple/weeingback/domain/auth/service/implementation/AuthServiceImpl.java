@@ -23,6 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final StringRedisTemplate stringRedisTemplate;
+    private final Jedis jedis;
 
     @Transactional
     public void join(AuthJoinRequest req){
@@ -69,8 +71,7 @@ public class AuthServiceImpl implements AuthService {
         String access = jwtProvider.generateAccessToken(authentication);
         String refresh = jwtProvider.generateRefreshToken(authentication);
 
-        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
-        stringValueOperations.set(id, refresh);
+        jedis.set(id, refresh);
 
         return new AuthLoginResponse(access, refresh);
     }
@@ -86,11 +87,10 @@ public class AuthServiceImpl implements AuthService {
             Authentication refreshToken = jwtProvider.getAuthentication(refresh);
             String refreshKey = refreshToken.getName();
 
-        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
-        String savedRefresh = stringValueOperations.get(refreshKey);
+        String savedRefresh = jedis.get(refreshKey);
 
         if(refresh.equals(savedRefresh)){
-            stringValueOperations.set(refreshKey, "");
+            jedis.set(refreshKey, "");
         } else throw new TokenNotEqualsException();
     }
 
@@ -111,8 +111,7 @@ public class AuthServiceImpl implements AuthService {
                 savedId = UUID.fromString(refreshToken.getName());
         } else savedId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
-        String token = stringValueOperations.get(savedId.toString());
+        String token = jedis.get(savedId.toString());
 
         if(refresh.equals(token)){
             if(!accessValidate && !refreshValidate){
@@ -132,11 +131,11 @@ public class AuthServiceImpl implements AuthService {
 
                 return new AuthLogoutResponse(newAccessToken, null);
             } else if(!refreshValidate){
-                Authentication authorizationToken = jwtProvider.getAuthentication(authorization); // 오류 발생지
+                Authentication authorizationToken = jwtProvider.getAuthentication(authorization);
                 UUID id = UUID.fromString(authorizationToken.getName());
                 String newRefresh = jwtProvider.generateRefreshToken(authorizationToken);
 
-                stringValueOperations.set(id.toString(), newRefresh);
+                jedis.set(id.toString(), newRefresh);
 
                 return new AuthLogoutResponse(null, newRefresh);
             } else {

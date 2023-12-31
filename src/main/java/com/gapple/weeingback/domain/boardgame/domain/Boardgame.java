@@ -35,7 +35,9 @@ public class Boardgame {
         List<NumberNameWithId> players = new ArrayList<>();
         boardgame.getMembers().forEach(member ->
             players.add(new NumberNameWithId(
-                    member.getNumber() + " " + member.getName(),
+                    member.getGrade(),
+                    member.getClassroom(),
+                    member.getNumber(),
                     member.getId().toString()
             ))
         );
@@ -44,7 +46,9 @@ public class Boardgame {
                 boardgame.getId().toString(),
                 boardgame.getMaxOf(),
                 new NumberNameWithId(
-                        creator.getNumber() + " " + creator.getName(),
+                        creator.getGrade(),
+                        creator.getClassroom(),
+                        creator.getNumber(),
                         creator.getId().toString()
                 ),
                 players);

@@ -39,13 +39,15 @@ public class AuthServiceImpl implements AuthService {
     private final Jedis jedis;
 
     @Transactional
-    public void join(AuthJoinRequest req){
-        if(!memberRepository.existsMemberByEmail(req.getEmail())) {
+    public void join(AuthJoinRequest request){
+        if(!memberRepository.existsMemberByEmail(request.getEmail())) {
             Member member = Member.builder()
-                    .email(req.getEmail())
-                    .password(passwordEncoder.encode(req.getPassword()))
-                    .name(req.getName())
-                    .number(req.getNumber())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .name(request.getName())
+                    .grade(request.getGrade())
+                    .classroom(request.getClassroom())
+                    .number(request.getNumber())
                     .role(AccessRole.ROLE_STUDENT.getName())
                     .build();
 

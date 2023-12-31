@@ -31,6 +31,12 @@ public class Member implements GrantedAuthority {
   private String name;
 
   @Column(columnDefinition = "INTEGER")
+  private Long grade;
+
+  @Column(columnDefinition = "INTEGER")
+  private Long classroom;
+
+  @Column(columnDefinition = "INTEGER")
   private Long number;
 
   @Column(columnDefinition = "VARCHAR(80)", nullable = false)

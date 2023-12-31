@@ -7,7 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NumberNameWithId {
-  private String info;
+  private Long grade;
+
+  private Long classroom;
+
+  private Long number;
 
   private String id;
 }

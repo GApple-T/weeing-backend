@@ -19,5 +19,12 @@ public class AuthJoinRequest {
     @Pattern(regexp = "^[가-힣]{2,}$", message = "한글 실명을 입력하지 않았습니다.")
     private String name;
 
+    @NotNull
+    private Long grade;
+
+    @NotNull
+    private Long classroom;
+
+    @NotNull
     private Long number;
 }

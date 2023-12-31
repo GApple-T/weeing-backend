@@ -11,6 +11,7 @@ import com.gapple.weeingback.domain.consulting.service.ConsultingService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.exception.ConsultingNotFoundException;
+import com.gapple.weeingback.global.exception.MemberNotFoundException;
 import com.gapple.weeingback.global.exception.SameConsultingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class ConsultingServiceImpl implements ConsultingService {
     @Transactional
     public void submitConsulting(ConsultingSubmitRequest request){
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = memberRepository.findMemberById(UUID.fromString(id));
+        Member member = memberRepository.findMemberById(UUID.fromString(id)).orElseThrow(MemberNotFoundException::new);
 
         Consulting consulting = Consulting.toConsulting(
                 Instant.now().toEpochMilli(),
@@ -85,7 +86,7 @@ public class ConsultingServiceImpl implements ConsultingService {
     @Override
     public ConsultingShowResponse showMyConsulting() {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = memberRepository.findMemberById(UUID.fromString(id));
+        Member member = memberRepository.findMemberById(UUID.fromString(id)).orElseThrow(MemberNotFoundException::new);
 
         List<ToConsultingResponse> consultingResponses = new ArrayList<>();
 
@@ -102,7 +103,7 @@ public class ConsultingServiceImpl implements ConsultingService {
     @Override
     public void updateConsulting(ConsultingUpdateRequest request) {
         UUID id = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
-        Member member = memberRepository.findMemberById(id);
+        Member member = memberRepository.findMemberById(id).orElseThrow(MemberNotFoundException::new);
 
         Consulting consulting = consultingRepository.findById(UUID.fromString(request.getId()))
                 .orElseThrow(ConsultingNotFoundException::new);

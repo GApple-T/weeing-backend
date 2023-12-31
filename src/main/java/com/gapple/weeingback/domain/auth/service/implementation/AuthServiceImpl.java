@@ -117,7 +117,7 @@ public class AuthServiceImpl implements AuthService {
             if(!accessValidate && !refreshValidate){
                 throw new TokenValidateException();
             } else if(!accessValidate){
-                Member member = memberRepository.findMemberById(savedId);
+                Member member = memberRepository.findMemberById(savedId).orElseThrow(MemberNotFoundException::new);
 
                 String password = member.getPassword();
 

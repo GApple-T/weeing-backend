@@ -7,9 +7,8 @@ import com.gapple.weeingback.domain.boardgame.repository.BoardgameRepository;
 import com.gapple.weeingback.domain.boardgame.service.BoardgameService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
-import com.gapple.weeingback.global.exception.BoardgameExistsException;
 import com.gapple.weeingback.global.exception.BoardgameNotFoundException;
-import com.gapple.weeingback.global.exception.SameCreatorException;
+import com.gapple.weeingback.global.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class BoardgameServiceImpl implements BoardgameService {
     @Transactional
     public void submitBoardgame(Long maxOf) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = memberRepository.findMemberById(UUID.fromString(id));
+        Member member = memberRepository.findMemberById(UUID.fromString(id)).orElseThrow(MemberNotFoundException::new);
 
         Boardgame boardgame = Boardgame.builder()
                 .creator(member)
@@ -37,12 +36,7 @@ public class BoardgameServiceImpl implements BoardgameService {
                 .joined(0L)
                 .build();
 
-        List<Boardgame> boardgames = member.getBoardgames();
-        boardgames.add(boardgame);
-
-        member.setBoardgames(boardgames);
-
-        memberRepository.save(member);
+        member.addBoardgame(boardgame);
         boardgameRepository.save(boardgame);
     }
 
@@ -60,13 +54,9 @@ public class BoardgameServiceImpl implements BoardgameService {
     @Override
     public void joinBoardgame(UUID id) {
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = memberRepository.findMemberById(UUID.fromString(memberId));
+        Member member = memberRepository.findMemberById(UUID.fromString(memberId)).orElseThrow(MemberNotFoundException::new);
 
         Boardgame boardgame = boardgameRepository.findBoardgameById(id).orElseThrow(BoardgameNotFoundException::new);
-
-        if(boardgame.getCreator().getId().toString().equals(memberId)){
-            throw new SameCreatorException();
-        }
 
         boardgame.addMember(member);
 
@@ -77,11 +67,8 @@ public class BoardgameServiceImpl implements BoardgameService {
     public void doneBoardgame(UUID boardgameId) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
         Boardgame boardgame = boardgameRepository.findBoardgameById(boardgameId).orElseThrow(BoardgameNotFoundException::new);
-        Member member = memberRepository.findMemberById(memberId);
-
-        List<Boardgame> boardgames = member.getBoardgames();
-        boardgames.remove(boardgame);
-        member.setBoardgames(boardgames);
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(MemberNotFoundException::new);
+        member.removeBoardgame(boardgame);
 
         boardgameRepository.delete(boardgame);
         memberRepository.save(member);

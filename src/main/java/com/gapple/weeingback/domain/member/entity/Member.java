@@ -59,6 +59,14 @@ public class Member implements GrantedAuthority {
     this.diaries.add(diary);
   }
 
+  public void addBoardgame(Boardgame boardgame){
+    this.boardgames.add(boardgame);
+  }
+
+  public void removeBoardgame(Boardgame boardgame){
+    this.boardgames.remove(boardgame);
+  }
+
   @Override
   public String getAuthority() {
     return role;

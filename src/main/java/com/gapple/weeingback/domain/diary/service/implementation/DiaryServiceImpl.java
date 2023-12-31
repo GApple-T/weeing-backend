@@ -9,6 +9,7 @@ import com.gapple.weeingback.domain.diary.repository.DiaryRepository;
 import com.gapple.weeingback.domain.diary.service.DiaryService;
 import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
+import com.gapple.weeingback.global.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +28,7 @@ public class DiaryServiceImpl implements DiaryService {
     @Transactional
     public void submitDiary(DiarySubmitRequest request) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = memberRepository.findMemberById(UUID.fromString(id));
+        Member member = memberRepository.findMemberById(UUID.fromString(id)).orElseThrow(MemberNotFoundException::new);
 
         Diary diary = Diary.builder()
                 .title(request.getTitle())
@@ -63,7 +64,7 @@ public class DiaryServiceImpl implements DiaryService {
     public DiaryMyListResponse myListDiary() {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Member member = memberRepository.findMemberById(UUID.fromString(id));
+        Member member = memberRepository.findMemberById(UUID.fromString(id)).orElseThrow(MemberNotFoundException::new);
         List<Diary> diaries = member.getDiaries();
 
         return new DiaryMyListResponse(diaries);

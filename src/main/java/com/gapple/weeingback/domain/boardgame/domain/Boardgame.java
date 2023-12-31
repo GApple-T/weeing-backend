@@ -22,7 +22,7 @@ public class Boardgame {
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     private UUID id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Member creator;
 
     @Column(nullable = false)
@@ -31,7 +31,6 @@ public class Boardgame {
     @Column(nullable = false)
     private Long joined;
 
-    @Column
     @OneToMany(fetch = FetchType.EAGER)
     private List<Member> members;
 

@@ -31,10 +31,6 @@ public class BoardgameServiceImpl implements BoardgameService {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberById(UUID.fromString(id));
 
-        if(member.getBoardgame() != null){
-            throw new BoardgameExistsException();
-        }
-
         Boardgame boardgame = Boardgame.builder()
                 .creator(member)
                 .maxOf(maxOf)

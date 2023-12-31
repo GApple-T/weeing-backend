@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
-    List<Diary> findAllByStudentGrade(Long studentGrade);
-    List<Diary> findAllByStudentGradeAndStudentClass(Long studentGrade, Long studentClass);
+    List<Diary> findAllByGrade(Long grade);
+    List<Diary> findAllByGradeAndClassroom(Long grade, Long classroom);
 }

@@ -26,8 +26,8 @@ public class Diary {
     private String description;
 
     @Column
-    private Long studentGrade;
+    private Long grade;
 
     @Column
-    private Long studentClass;
+    private Long classroom;
 }

@@ -15,10 +15,4 @@ public class DiarySubmitRequest {
 
     @NotBlank
     private String description;
-
-    @NotNull
-    private Long studentGrade;
-
-    @NotNull
-    private Long studentClass;
 }

@@ -11,7 +11,6 @@ import com.gapple.weeingback.domain.member.entity.Member;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +32,8 @@ public class DiaryServiceImpl implements DiaryService {
         Diary diary = Diary.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .studentClass(request.getStudentClass())
-                .studentGrade(request.getStudentGrade())
+                .grade(member.getGrade())
+                .classroom(member.getClassroom())
                 .build();
 
         member.addDiary(diary);
@@ -49,9 +48,9 @@ public class DiaryServiceImpl implements DiaryService {
         List<Diary> diaries;
 
         if(request.getStudentClass() == null){
-            diaries = diaryRepository.findAllByStudentGrade(request.getStudentGrade());
+            diaries = diaryRepository.findAllByGrade(request.getStudentGrade());
         } else {
-            diaries = diaryRepository.findAllByStudentGradeAndStudentClass(
+            diaries = diaryRepository.findAllByGradeAndClassroom(
                     request.getStudentGrade(),
                     request.getStudentClass()
             );

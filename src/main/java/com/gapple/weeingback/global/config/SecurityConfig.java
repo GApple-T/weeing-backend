@@ -35,7 +35,10 @@ public class SecurityConfig {
         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     );
 
-    http.csrf(AbstractHttpConfigurer::disable);
+    http
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(AbstractHttpConfigurer::disable);
+
 
     return http.build();
   }

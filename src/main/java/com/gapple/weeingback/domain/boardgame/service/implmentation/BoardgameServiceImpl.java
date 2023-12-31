@@ -75,9 +75,14 @@ public class BoardgameServiceImpl implements BoardgameService {
     }
 
     @Override
-    public void doneBoardgame(UUID id) {
-        Boardgame boardgame = boardgameRepository.findBoardgameById(id).orElseThrow(BoardgameNotFoundException::new);
+    public void doneBoardgame(UUID boardgameId) {
+        UUID userId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        Boardgame boardgame = boardgameRepository.findBoardgameById(boardgameId).orElseThrow(BoardgameNotFoundException::new);
 
+        Member member = memberRepository.findMemberById(userId);
+        member.setBoardgame(null);
+
+        memberRepository.save(member);
         boardgameRepository.delete(boardgame);
     }
 }

@@ -28,9 +28,6 @@ public class Boardgame {
     @Column(nullable = false)
     private Long maxOf;
 
-    @Column(nullable = false)
-    private Long joined;
-
     @OneToMany(fetch = FetchType.EAGER)
     private List<Member> members;
 
@@ -46,7 +43,6 @@ public class Boardgame {
         return new ToBoardgameDto(
                 boardgame.getId().toString(),
                 boardgame.getMaxOf(),
-                boardgame.getJoined(),
                 new NumberNameWithId(
                         creator.getNumber() + " " + creator.getName(),
                         creator.getId().toString()

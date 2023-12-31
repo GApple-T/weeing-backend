@@ -39,15 +39,11 @@ public class Member implements GrantedAuthority {
   @Column(columnDefinition = "VARCHAR(80)", nullable = false)
   private String role;
 
-  @OneToMany(fetch = FetchType.EAGER)
+  @OneToMany
   @JoinColumn(name = "consulting_id")
   private List<Consulting> consulting;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name = "boardgame_id")
-  private List<Boardgame> boardgames;
-
-  @OneToMany(fetch = FetchType.EAGER)
+  @OneToMany
   @JoinColumn(name = "diary_id")
   private List<Diary> diaries;
 
@@ -59,13 +55,6 @@ public class Member implements GrantedAuthority {
     this.diaries.add(diary);
   }
 
-  public void addBoardgame(Boardgame boardgame){
-    this.boardgames.add(boardgame);
-  }
-
-  public void removeBoardgame(Boardgame boardgame){
-    this.boardgames.remove(boardgame);
-  }
 
   @Override
   public String getAuthority() {

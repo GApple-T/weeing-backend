@@ -22,7 +22,7 @@ public class Boardgame {
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     private UUID id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Member creator;
 
     @Column(nullable = false)

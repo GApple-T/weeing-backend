@@ -36,7 +36,6 @@ public class BoardgameServiceImpl implements BoardgameService {
                 .joined(0L)
                 .build();
 
-        member.addBoardgame(boardgame);
         boardgameRepository.save(boardgame);
     }
 
@@ -52,26 +51,22 @@ public class BoardgameServiceImpl implements BoardgameService {
     }
 
     @Override
-    public void joinBoardgame(UUID id) {
+    @Transactional
+    public void joinBoardgame(UUID boardgameId) {
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findMemberById(UUID.fromString(memberId)).orElseThrow(MemberNotFoundException::new);
 
-        Boardgame boardgame = boardgameRepository.findBoardgameById(id).orElseThrow(BoardgameNotFoundException::new);
+        Boardgame boardgame = boardgameRepository.findBoardgameById(boardgameId).orElseThrow(BoardgameNotFoundException::new);
 
         boardgame.addMember(member);
 
+        memberRepository.save(member);
         boardgameRepository.save(boardgame);
     }
 
     @Override
     @Transactional
     public void doneBoardgame(UUID boardgameId) {
-        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(MemberNotFoundException::new);
-
-        member.removeBoardgame(boardgameRepository.findBoardgameById(boardgameId).get());
-        memberRepository.save(member);
-
         boardgameRepository.deleteById(boardgameId);
     }
 }

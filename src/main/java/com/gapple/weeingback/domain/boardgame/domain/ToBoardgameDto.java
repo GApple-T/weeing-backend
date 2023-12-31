@@ -13,7 +13,6 @@ import java.util.List;
 public class ToBoardgameDto {
     private String id;
     private Long maxOf;
-    private Long joined;
     private NumberNameWithId creator;
     private List<NumberNameWithId> players;
 }

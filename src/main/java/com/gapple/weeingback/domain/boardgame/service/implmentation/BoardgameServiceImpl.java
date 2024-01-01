@@ -56,7 +56,6 @@ public class BoardgameServiceImpl implements BoardgameService {
         Member member = memberRepository.findMemberById(memberId).orElseThrow(MemberNotFoundException::new);
 
         Boardgame boardgame = boardgameRepository.findBoardgameById(boardgameId).orElseThrow(BoardgameNotFoundException::new);
-
         boardgame.addMember(member);
 
         boardgameRepository.save(boardgame);

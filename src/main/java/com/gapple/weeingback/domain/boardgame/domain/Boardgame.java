@@ -28,7 +28,7 @@ public class Boardgame {
     @Column(nullable = false)
     private Long maxOf;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
     private List<Member> members;
 
     public ToBoardgameDto toDto(Boardgame boardgame){

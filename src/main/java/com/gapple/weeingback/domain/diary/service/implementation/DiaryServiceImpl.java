@@ -49,7 +49,10 @@ public class DiaryServiceImpl implements DiaryService {
     public DiaryListResponse listDiary(DiaryListRequest request) {
         List<Diary> diaries;
 
-        if(request.getStudentClass() == null){
+        if(request.getStudentGrade() == null & request.getStudentClass() == null){
+            diaries = diaryRepository.findAll();
+        }
+        else if(request.getStudentClass() == null){
             diaries = diaryRepository.findAllByGrade(request.getStudentGrade());
         } else {
             diaries = diaryRepository.findAllByGradeAndClassroom(

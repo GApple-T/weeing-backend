@@ -51,3 +51,6 @@ redis:
   host: ${REDIS_HOST}
   port: ${REDIS_PORT}
   auth: ${REDIS_AUTH}
+
+server:
+  port: 8082

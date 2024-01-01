@@ -69,6 +69,13 @@ public class DiaryServiceImpl implements DiaryService {
 
         log.info(diaries.toString());
 
-        return new DiaryMyListResponse(diaries);
+        DiaryMyListResponse response = new DiaryMyListResponse(
+                diaries,
+                member.getName(),
+                member.getGrade(),
+                member.getClassroom(),
+                member.getNumber());
+
+        return response;
     }
 }

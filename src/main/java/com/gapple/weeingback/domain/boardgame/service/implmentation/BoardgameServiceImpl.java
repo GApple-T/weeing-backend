@@ -52,14 +52,13 @@ public class BoardgameServiceImpl implements BoardgameService {
     @Override
     @Transactional
     public void joinBoardgame(UUID boardgameId) {
-        String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = memberRepository.findMemberById(UUID.fromString(memberId)).orElseThrow(MemberNotFoundException::new);
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(MemberNotFoundException::new);
 
         Boardgame boardgame = boardgameRepository.findBoardgameById(boardgameId).orElseThrow(BoardgameNotFoundException::new);
 
         boardgame.addMember(member);
 
-        memberRepository.save(member);
         boardgameRepository.save(boardgame);
     }
 

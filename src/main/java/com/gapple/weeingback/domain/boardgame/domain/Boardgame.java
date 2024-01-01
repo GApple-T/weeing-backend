@@ -38,6 +38,7 @@ public class Boardgame {
                     member.getGrade(),
                     member.getClassroom(),
                     member.getNumber(),
+                    member.getName(),
                     member.getId().toString()
             ))
         );
@@ -49,6 +50,7 @@ public class Boardgame {
                         creator.getGrade(),
                         creator.getClassroom(),
                         creator.getNumber(),
+                        creator.getName(),
                         creator.getId().toString()
                 ),
                 players);

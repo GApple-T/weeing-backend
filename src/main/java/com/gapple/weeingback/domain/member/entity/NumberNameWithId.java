@@ -13,5 +13,7 @@ public class NumberNameWithId {
 
   private Long number;
 
+  private String name;
+
   private String id;
 }

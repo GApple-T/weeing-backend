@@ -1,4 +1,4 @@
-package com.gapple.weeingback.domain.member.entity;
+package com.gapple.weeingback.domain.boardgame.domain;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NumberNameWithId {
+public class BoardgameMemberDto {
   private Long grade;
 
   private Long classroom;

@@ -1,6 +1,7 @@
 package com.gapple.weeingback.domain.member.entity;
 
 import com.gapple.weeingback.domain.boardgame.domain.Boardgame;
+import com.gapple.weeingback.domain.boardgame.domain.BoardgameMemberDto;
 import com.gapple.weeingback.domain.consulting.entity.Consulting;
 
 import com.gapple.weeingback.domain.diary.entity.Diary;
@@ -45,11 +46,11 @@ public class Member implements GrantedAuthority {
   @Column(columnDefinition = "VARCHAR(80)", nullable = false)
   private String role;
 
-  @OneToMany
+  @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "consulting_id")
   private List<Consulting> consulting;
 
-  @OneToMany
+  @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "diary_id")
   private List<Diary> diaries;
 
@@ -65,5 +66,15 @@ public class Member implements GrantedAuthority {
   @Override
   public String getAuthority() {
     return role;
+  }
+
+  public static BoardgameMemberDto toBoardgameMemberDto(Member member){
+    return new BoardgameMemberDto(
+            member.getGrade(),
+            member.getClassroom(),
+            member.getNumber(),
+            member.getName(),
+            member.getId().toString()
+    );
   }
 }

@@ -31,31 +31,6 @@ public class Boardgame {
     @OneToMany
     private List<Member> members;
 
-    public ToBoardgameDto toDto(Boardgame boardgame){
-        List<NumberNameWithId> players = new ArrayList<>();
-        boardgame.getMembers().forEach(member ->
-            players.add(new NumberNameWithId(
-                    member.getGrade(),
-                    member.getClassroom(),
-                    member.getNumber(),
-                    member.getName(),
-                    member.getId().toString()
-            ))
-        );
-
-        return new ToBoardgameDto(
-                boardgame.getId().toString(),
-                boardgame.getMaxOf(),
-                new NumberNameWithId(
-                        creator.getGrade(),
-                        creator.getClassroom(),
-                        creator.getNumber(),
-                        creator.getName(),
-                        creator.getId().toString()
-                ),
-                players);
-    }
-
     public void addMember(Member member){
         members.add(member);
     }

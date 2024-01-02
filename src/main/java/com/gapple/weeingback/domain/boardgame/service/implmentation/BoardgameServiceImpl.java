@@ -6,6 +6,7 @@ import com.gapple.weeingback.domain.boardgame.domain.dto.response.BoardgameShowR
 import com.gapple.weeingback.domain.boardgame.repository.BoardgameRepository;
 import com.gapple.weeingback.domain.boardgame.service.BoardgameService;
 import com.gapple.weeingback.domain.member.entity.Member;
+import com.gapple.weeingback.domain.member.entity.NumberNameWithId;
 import com.gapple.weeingback.domain.member.repository.MemberRepository;
 import com.gapple.weeingback.global.exception.BoardgameNotFoundException;
 import com.gapple.weeingback.global.exception.MemberNotFoundException;
@@ -43,8 +44,10 @@ public class BoardgameServiceImpl implements BoardgameService {
         List<Boardgame> boardgames = boardgameRepository.findAll();
         List<ToBoardgameDto> boardgameDtos = new ArrayList<>();
         boardgames.forEach(boardgame ->
-            boardgameDtos.add(boardgame.toDto(boardgame))
+            boardgameDtos.add(toDto(boardgame))
         );
+
+
 
         return new BoardgameShowResponse(boardgameDtos);
     }
@@ -66,4 +69,44 @@ public class BoardgameServiceImpl implements BoardgameService {
     public void doneBoardgame(UUID boardgameId) {
         boardgameRepository.deleteById(boardgameId);
     }
+
+    public ToBoardgameDto toDto(Boardgame boardgame){
+        List<NumberNameWithId> players = new ArrayList<>();
+        List<Member> members = boardgame.getMembers();
+        Member creator = boardgame.getCreator();
+
+        members.forEach(m -> {
+            players.add(new NumberNameWithId(
+                    m.getGrade(),
+                    m.getClassroom(),
+                    m.getNumber(),
+                    m.getName(),
+                    m.getId().toString()
+            ));
+        });
+
+        boardgame.getMembers().forEach(member ->
+                players.add(new NumberNameWithId(
+                        member.getGrade(),
+                        member.getClassroom(),
+                        member.getNumber(),
+                        member.getName(),
+                        member.getId().toString()
+                ))
+        );
+
+        return new ToBoardgameDto(
+                boardgame.getId().toString(),
+                boardgame.getMaxOf(),
+                new NumberNameWithId(
+                        creator.getGrade(),
+                        creator.getClassroom(),
+                        creator.getNumber(),
+                        creator.getName(),
+                        creator.getId().toString()
+                ),
+                players);
+    }
 }
+
+

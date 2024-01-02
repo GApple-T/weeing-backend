@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,10 +39,13 @@ public class DiaryServiceImpl implements DiaryService {
                 .classroom(member.getClassroom())
                 .build();
 
-        member.addDiary(diary);
+        if(member.getDiaries() == null) member.setDiaries(new ArrayList<Diary>());
+        List<Diary> diaries = member.getDiaries();
+        diaries.add(diary);
+        member.setDiaries(diaries);
 
-        memberRepository.save(member);
         diaryRepository.save(diary);
+        memberRepository.save(member);
     }
 
     @Override

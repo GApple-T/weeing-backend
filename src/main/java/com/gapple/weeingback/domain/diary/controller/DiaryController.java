@@ -25,7 +25,7 @@ public class DiaryController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<DiaryListResponse> listDiary(@RequestParam Long grade, @RequestParam Long classroom){
+    public ResponseEntity<DiaryListResponse> listDiary(@RequestParam(required = false) Long grade, @RequestParam(required = false) Long classroom){
         DiaryListResponse response = diaryService.listDiary(grade, classroom);
         return ResponseEntity.ok().body(response);
     }

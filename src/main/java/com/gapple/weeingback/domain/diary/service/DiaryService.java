@@ -8,6 +8,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface DiaryService {
     void submitDiary(DiarySubmitRequest request);
-    DiaryListResponse listDiary(DiaryListRequest request);
+    DiaryListResponse listDiary(Long grade, Long classroom);
     DiaryMyListResponse myListDiary();
 }

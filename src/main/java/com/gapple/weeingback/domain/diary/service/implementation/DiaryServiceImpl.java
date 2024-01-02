@@ -1,7 +1,6 @@
 package com.gapple.weeingback.domain.diary.service.implementation;
 
 import com.gapple.weeingback.domain.diary.entity.Diary;
-import com.gapple.weeingback.domain.diary.entity.dto.request.DiaryListRequest;
 import com.gapple.weeingback.domain.diary.entity.dto.request.DiarySubmitRequest;
 import com.gapple.weeingback.domain.diary.entity.dto.response.DiaryListResponse;
 import com.gapple.weeingback.domain.diary.entity.dto.response.DiaryMyListResponse;
@@ -50,18 +49,18 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional(readOnly = true)
-    public DiaryListResponse listDiary(DiaryListRequest request) {
+    public DiaryListResponse listDiary(Long grade, Long classroom) {
         List<Diary> diaries;
 
-        if(request.getStudentGrade() == null & request.getStudentClass() == null){
+        if(grade == null & classroom == null){
             diaries = diaryRepository.findAll();
         }
-        else if(request.getStudentClass() == null){
-            diaries = diaryRepository.findAllByGrade(request.getStudentGrade());
+        else if(classroom == null){
+            diaries = diaryRepository.findAllByGrade(grade);
         } else {
             diaries = diaryRepository.findAllByGradeAndClassroom(
-                    request.getStudentGrade(),
-                    request.getStudentClass()
+                    grade,
+                    classroom
             );
         }
 

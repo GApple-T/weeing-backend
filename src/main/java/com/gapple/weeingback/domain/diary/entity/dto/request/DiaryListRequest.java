@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiaryListRequest {
-    private Long studentGrade;
+    private Long grade;
 
-    private Long studentClass;
+    private Long classroom;
 }
